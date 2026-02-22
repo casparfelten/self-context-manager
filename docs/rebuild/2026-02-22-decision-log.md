@@ -180,9 +180,19 @@
 - **Run date:** 2026-02-22
 - **Document owner:** decagent/docs track
 - **Current phase outcomes:** Phase 1 complete; Phase 2 complete; Phase 3 complete; Phase 4 complete
-- **Final E2E/report stage status:** In Progress
+- **Final E2E/report stage status:** Complete
 - **Known governance baseline:**
   - Real XTDB required for acceptance evidence
   - No mock-based acceptance claims
   - Keep rebuild changes minimal and clean
-- **Next required updates:** Populate each phase section only after decision + evidence exist.
+- **Next required updates:** Final report completed (`docs/rebuild/2026-02-22-final-report.md`); run close-out recorded.
+
+## Final stage closure
+
+- **Status:** Complete
+- **Decision:** Final E2E/report stage accepted; rebuild run is closed.
+- **Closure evidence:**
+  - Final E2E merge on `main`: `45e753f` (from `d2e9083`, `tests/e2e-final.test.ts`).
+  - Full suite progression reached and recorded at close-out: **25/25 tests passing**.
+  - Final completion report published: `docs/rebuild/2026-02-22-final-report.md`.
+- **Open blockers at close:** None.
