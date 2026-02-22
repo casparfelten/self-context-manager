@@ -13,6 +13,7 @@ export class ContextManager {
   private readonly pinned = new Set<string>();
   private readonly locked = new Set<string>();
   private readonly toolHistory: Array<{ id: string; turnIndex: number }> = [];
+  private readonly seenToolcalls = new Set<string>();
   private cursor = 0;
   private lastMessagesRef: AgentMessage[] | null = null;
   private readonly chatObjectId: string;
@@ -105,12 +106,15 @@ export class ContextManager {
   }
 
   private async handleToolResult(message: ToolResultMessage): Promise<void> {
+    if (this.seenToolcalls.has(message.toolCallId)) return;
+
+    const existing = await this.xtdb.get(message.toolCallId) as ToolcallObject | null;
     const textContent = message.content
       .filter((part) => part.type === 'text')
       .map((part) => part.text)
       .join('\n');
 
-    const toolObj: ToolcallObject = {
+    const toolObj: ToolcallObject = existing ?? {
       id: message.toolCallId,
       type: 'toolcall',
       content: textContent,
@@ -127,11 +131,12 @@ export class ContextManager {
       file_refs: [],
     };
 
-    toolObj.content_hash = computeContentHash(toolObj.content);
-    toolObj.metadata_view_hash = computeMetadataViewHash(toolObj);
-    toolObj.object_hash = computeObjectHash(toolObj);
-
-    await this.xtdb.put(toolObj);
+    if (!existing) {
+      toolObj.content_hash = computeContentHash(toolObj.content);
+      toolObj.metadata_view_hash = computeMetadataViewHash(toolObj);
+      toolObj.object_hash = computeObjectHash(toolObj);
+      await this.xtdb.put(toolObj);
+    }
 
     this.metadataPool.add({
       id: toolObj.id,
@@ -148,8 +153,9 @@ export class ContextManager {
       status: toolObj.status,
     });
 
-    this.activePool.activate(toolObj.id, toolObj.content ?? '');
+    this.activePool.activate(toolObj.id, (toolObj.content ?? ''));
     this.toolHistory.push({ id: toolObj.id, turnIndex: this.chatPool.getTurns().length - 1 });
+    this.seenToolcalls.add(toolObj.id);
     this.applyAutoDeactivation();
     this.refreshChatMetadata();
   }
