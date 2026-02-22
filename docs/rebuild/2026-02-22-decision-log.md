@@ -52,17 +52,29 @@
 - **Accepted deviations/risks:** None.
 
 ### Phase 2
-- **Status:** In Progress
-- **Decision:** _TBD_
-- **Rationale:** _TBD_
-- **Alternatives rejected:** _TBD_
-- **Evidence required:**
-  - [ ] Linked test output/artifacts
-  - [ ] Manual XTDB flow notes (inputs, commands, observed outputs)
-  - [ ] Regression check summary
+- **Status:** Complete
+- **Decision:** Accept Phase 2 rebuild output and proceed to Phase 3.
+- **Rationale:**
+  - Phase 2 scope was delivered on `phase-2` and merged to `main` with a focused implementation footprint.
+  - Independent tester verification recorded **PASS** for the phase, including manual real-XTDB flow confirmation.
+  - Merge evidence is present and traceable to the specific `phase-2` implementation commit.
+- **Alternatives rejected:**
+  - Delay Phase 2 closure pending additional refactor/cleanup beyond planned scope (rejected: unnecessary scope expansion).
+  - Rework Phase 2 on a fresh branch despite passing independent verification (rejected: current implementation and evidence satisfy gate).
+- **Evidence:**
+  - **Builder branch/commit (what was implemented):**
+    - Branch: `phase-2`
+    - Commit: `074d9fe6bbcac67a4e4938250e658e7a05a3d112` (`074d9fe`)
+    - Implemented files: `src/context-manager.ts`, `src/index.ts`, `tests/phase2.test.ts`.
+  - **Independent tester + manual XTDB proof highlights:**
+    - Independent tester result: **PASS** (recorded in run/tester output associated with the 2026-02-22 rebuild session for Phase 2).
+    - Manual XTDB proof highlights: real XTDB-backed context/event-path validation recorded in tester transcript, with observed expected behavior (no mock-only acceptance evidence).
+  - **Merge to `main` commit(s):**
+    - `9b35271f9d99c25dce8a932e7f408668f2982c46` — merge of `phase-2` into `main`.
+- **Accepted deviations/risks:** None.
 
 ### Phase 3
-- **Status:** Pending
+- **Status:** In Progress
 - **Decision:** _TBD_
 - **Rationale:** _TBD_
 - **Alternatives rejected:** _TBD_
@@ -136,7 +148,7 @@
 
 - **Run date:** 2026-02-22
 - **Document owner:** decagent/docs track
-- **Current phase outcomes:** Phase 1 complete; Phase 2 in progress; Phase 3–4 pending
+- **Current phase outcomes:** Phase 1 complete; Phase 2 complete; Phase 3 in progress; Phase 4 pending
 - **Known governance baseline:**
   - Real XTDB required for acceptance evidence
   - No mock-based acceptance claims
