@@ -1,0 +1,7 @@
+node_modules/
+dist/
+data/
+xtdb/*.jar
+xtdb/*.log
+xtdb/*.pid
+*.tsbuildinfo
