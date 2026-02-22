@@ -101,6 +101,38 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
     await rm(root, { recursive: true, force: true });
   });
 
+  it('public pin/unpin API persists pinned state across reload with deterministic lifecycle', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    await writeFile(join(root, 'pinned.md'), 'pin me', 'utf8');
+
+    const sessionId = `s-${Date.now()}-pin`;
+    const ext1 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    await ext1.load();
+
+    const read = await ext1.read('pinned.md');
+    expect(ext1.pin(read.id!).ok).toBe(true);
+    expect(ext1.deactivate(read.id!).ok).toBe(true);
+
+    await ext1.close();
+
+    const ext2 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    await ext2.load();
+
+    const snap2 = ext2.getSnapshot();
+    expect(snap2.pinnedSet.has(read.id!)).toBe(true);
+    expect(snap2.activeSet.has(read.id!)).toBe(false);
+
+    expect(ext2.unpin(read.id!).ok).toBe(true);
+    await ext2.close();
+
+    const ext3 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    await ext3.load();
+    const snap3 = ext3.getSnapshot();
+    expect(snap3.pinnedSet.has(read.id!)).toBe(false);
+    await ext3.close();
+    await rm(root, { recursive: true, force: true });
+  });
+
   it('cursor invalidation handles array replacement with preserved prefix safely', async () => {
     const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-cursor`, systemPrompt: 'SYS' });
     await ext.load();

@@ -186,6 +186,20 @@ export class PiMemoryPhase3Extension {
     return { ok: true, message: `deactivated ${id}` };
   }
 
+  pin(id: string): { ok: boolean; message: string } {
+    if (!this.knowsObject(id)) return { ok: false, message: `Object not found: ${id}` };
+    this.pinnedSet.add(id);
+    this.enqueuePersist();
+    return { ok: true, message: `pinned ${id}` };
+  }
+
+  unpin(id: string): { ok: boolean; message: string } {
+    if (!this.knowsObject(id) && !this.pinnedSet.has(id)) return { ok: false, message: `Object not found: ${id}` };
+    this.pinnedSet.delete(id);
+    this.enqueuePersist();
+    return { ok: true, message: `unpinned ${id}` };
+  }
+
   async wrappedWrite(path: string, content: string): Promise<void> {
     const absolutePath = this.resolvePath(path);
     await writeFile(absolutePath, content, 'utf8');
@@ -431,6 +445,10 @@ export class PiMemoryPhase3Extension {
   private signature(message: HarnessMessage): string {
     if (message.role === 'toolResult') return `tool:${message.toolCallId}:${message.timestamp}`;
     return `${message.role}:${message.timestamp}:${this.extractText(message.content)}`;
+  }
+
+  private knowsObject(id: string): boolean {
+    return this.objects.has(id) || this.metadataSeen.has(id) || id === this.chatObjectId || id === this.systemPromptObjectId;
   }
 
   async getXtEntity(id: string): Promise<Record<string, unknown> | null> {
