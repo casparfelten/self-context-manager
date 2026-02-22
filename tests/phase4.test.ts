@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, expect, it } from 'vitest';
-import { PiMemoryPhase3Extension, XtdbClient, type HarnessMessage } from '../src/index.js';
+import { SelfContextManager, XtdbClient, type HarnessMessage } from '../src/index.js';
 
 function text(value: string) {
   return [{ type: 'text' as const, text: value }];
@@ -11,11 +11,11 @@ function text(value: string) {
 
 describe('phase 4 - watcher, resume, cursor robustness', () => {
   it('indexed file change triggers a new XTDB version via watcher', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     const filePath = join(root, 'tracked.txt');
     await writeFile(filePath, 'v1', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-watch-change`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-watch-change`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
     const read = await ext.read('tracked.txt');
 
@@ -33,11 +33,11 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
   });
 
   it('delete triggers tombstone version with null content and null path', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     const filePath = join(root, 'tracked-delete.txt');
     await writeFile(filePath, 'to be deleted', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-watch-delete`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-watch-delete`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
     const read = await ext.read('tracked-delete.txt');
 
@@ -52,11 +52,11 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
   });
 
   it('watcher updates index but does not auto-activate metadata-only discovered files', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     const filePath = join(root, 'discovered.ts');
     await writeFile(filePath, 'const a = 1;', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-watch-no-activate`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-watch-no-activate`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
     await ext.wrappedLs('./discovered.ts');
 
@@ -74,12 +74,12 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
   });
 
   it('session save/load reconstructs pool state and catches while-down file change', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     const filePath = join(root, 'resume.md');
     await writeFile(filePath, 'before-resume', 'utf8');
 
     const sessionId = `s-${Date.now()}-resume`;
-    const ext1 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext1 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext1.load();
     const read = await ext1.read('resume.md');
     ext1.deactivate(read.id!);
@@ -87,7 +87,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
 
     await writeFile(filePath, 'changed-while-down', 'utf8');
 
-    const ext2 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext2 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext2.load();
 
     const snap = ext2.getSnapshot();
@@ -102,11 +102,11 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
   });
 
   it('public pin/unpin API persists pinned state across reload with deterministic lifecycle', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase4-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     await writeFile(join(root, 'pinned.md'), 'pin me', 'utf8');
 
     const sessionId = `s-${Date.now()}-pin`;
-    const ext1 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext1 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext1.load();
 
     const read = await ext1.read('pinned.md');
@@ -115,7 +115,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
 
     await ext1.close();
 
-    const ext2 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext2 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext2.load();
 
     const snap2 = ext2.getSnapshot();
@@ -125,7 +125,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
     expect(ext2.unpin(read.id!).ok).toBe(true);
     await ext2.close();
 
-    const ext3 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext3 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext3.load();
     const snap3 = ext3.getSnapshot();
     expect(snap3.pinnedSet.has(read.id!)).toBe(false);
@@ -134,7 +134,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
   });
 
   it('cursor invalidation handles array replacement with preserved prefix safely', async () => {
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-cursor`, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-cursor`, systemPrompt: 'SYS' });
     await ext.load();
 
     const first: HarnessMessage[] = [

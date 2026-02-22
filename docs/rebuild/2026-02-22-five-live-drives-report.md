@@ -4,7 +4,7 @@
 
 Environment used:
 - Repo branch: `live-drive/five-scenarios-2026-02-22`
-- Runtime class: `PiMemoryPhase3Extension`
+- Runtime class: `SelfContextManager`
 - XTDB: `http://172.17.0.1:3000` (real service)
 - Evidence file: `docs/rebuild/2026-02-22-five-live-drives-evidence.json`
 
@@ -27,8 +27,8 @@ Context management APIs are functionally working (`activate`/`deactivate`/`pin`/
 
 ### IDs and invocation evidence
 - Read IDs:
-  - `file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md`
-  - `file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts`
+  - `file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md`
+  - `file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts`
 - Invoked: `wrappedLs`, `wrappedFind`, `wrappedGrep`, `read`, `deactivate`
 
 ### Is context management being used correctly?
@@ -74,7 +74,7 @@ Context management APIs are functionally working (`activate`/`deactivate`/`pin`/
 - End: history length=20, active=6
 
 ### IDs and invocation evidence
-- File ID: `file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log`
+- File ID: `file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log`
 - Invoked: `wrappedWrite`, `deactivate`, `activate`
 
 ### Is context management being used correctly?
@@ -98,7 +98,7 @@ Context management APIs are functionally working (`activate`/`deactivate`/`pin`/
 - After unpin: metadata=16, active=7, pinned=0
 
 ### IDs and invocation evidence
-- File ID: `file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md`
+- File ID: `file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md`
 - `charCountAfterReload=17` (includes down-time mutation)
 - Invoked: `pin`, `unpin`, reload/load cycle
 

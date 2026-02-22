@@ -1,7 +1,7 @@
 import { mkdir, writeFile, readFile, readdir, stat, access } from 'node:fs/promises';
 import { resolve, dirname, basename, relative } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { PiMemoryPhase3Extension } from '../dist/src/phase3-extension.js';
+import { SelfContextManager } from '../dist/src/phase3-extension.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is required');
@@ -148,7 +148,7 @@ async function runExperiment(config) {
   await mkdir(workspaceRoot, { recursive: true });
   await seed(workspaceRoot);
 
-  const ext = new PiMemoryPhase3Extension({
+  const ext = new SelfContextManager({
     sessionId: `ctx-exp-${config.id}-${Date.now()}`,
     workspaceRoot,
     systemPrompt: config.systemPrompt,

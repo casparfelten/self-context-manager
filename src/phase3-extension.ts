@@ -27,7 +27,7 @@ type SessionStateDoc = {
   metadata_pool?: MetadataEntry[];
 };
 
-export class PiMemoryPhase3Extension {
+export class SelfContextManager {
   private readonly xtdb: XtdbClient;
   private readonly objects = new Map<string, ObjectState>();
   private readonly metadataPool: MetadataEntry[] = [];

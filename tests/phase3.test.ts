@@ -2,7 +2,7 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { PiMemoryPhase3Extension, type HarnessMessage } from '../src/index.js';
+import { SelfContextManager, type HarnessMessage } from '../src/index.js';
 
 function text(value: string) {
   return [{ type: 'text' as const, text: value }];
@@ -10,7 +10,7 @@ function text(value: string) {
 
 describe('phase 3 - pi extension + tools', () => {
   it('loads extension and writes session/chat/system objects to XTDB', async () => {
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}`, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}`, systemPrompt: 'SYS' });
     await ext.load();
 
     const session = await ext.getXtEntity(ext.sessionObjectId);
@@ -23,11 +23,11 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('read() indexes file, adds metadata, and appears in active context', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
     const filePath = join(root, 'note.md');
     await writeFile(filePath, 'hello from phase3', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-read`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-read`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
     const readResult = await ext.read('note.md');
 
@@ -44,8 +44,8 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('wrapped write/edit update XTDB file object', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-write`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-write`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.wrappedWrite('doc.txt', 'v1');
@@ -60,10 +60,10 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('activate/deactivate behavior with lock denial', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
     await writeFile(join(root, 'a.md'), 'A', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-activate`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-activate`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
     const r = await ext.read('a.md');
 
@@ -75,8 +75,8 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('ls discovery indexes metadata-only files and toolResult is metadata ref', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-ls`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-ls`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.wrappedLs('./x.ts\n./y.md');
@@ -98,8 +98,8 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('wrappedFind indexes discovered paths as metadata-only XTDB file objects', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-find`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-find`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.wrappedFind('./alpha.ts\nsub/beta.md');
@@ -117,8 +117,8 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('wrappedGrep indexes file paths extracted from grep output', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-grep`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-grep`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.wrappedGrep('src/main.ts:12:needle\ndocs/readme.md:1:needle');
@@ -135,8 +135,8 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('observeToolExecutionEnd only indexes guessed paths for bash tool execution', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-phase3-'));
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-bash-observe`, workspaceRoot: root, systemPrompt: 'SYS' });
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-bash-observe`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.observeToolExecutionEnd('python', 'cat ./ignored.txt');
@@ -150,7 +150,7 @@ describe('phase 3 - pi extension + tools', () => {
   });
 
   it('assembled Message[] structure sanity', async () => {
-    const ext = new PiMemoryPhase3Extension({ sessionId: `s-${Date.now()}-ctx`, systemPrompt: 'SYS' });
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-ctx`, systemPrompt: 'SYS' });
     await ext.load();
 
     const msgs: HarnessMessage[] = [

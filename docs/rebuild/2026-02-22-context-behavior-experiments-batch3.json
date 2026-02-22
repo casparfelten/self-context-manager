@@ -63,14 +63,14 @@
           {
             "step": 7,
             "at": "2026-02-22T14:57:59.519Z",
-            "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+            "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
             "mode": "reactivate-after-deactivate",
             "reason": "recall initial alert-softening timestamp for final timeline"
           },
           {
             "step": 11,
             "at": "2026-02-22T14:57:59.926Z",
-            "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+            "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
             "mode": "reactivate-after-deactivate",
             "reason": "recall partner payload failure point for causal chain"
           }
@@ -82,7 +82,7 @@
           "at": "2026-02-22T14:57:58.300Z",
           "type": "read",
           "path": "timeline/ops-log.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "ok": true
         },
         {
@@ -90,14 +90,14 @@
           "at": "2026-02-22T14:57:58.706Z",
           "type": "read",
           "path": "timeline/gateway-log.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "ok": true
         },
         {
           "step": 3,
           "at": "2026-02-22T14:57:58.706Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "reason": "captured early timeline anchors; shifting to thresholds",
           "ok": true
         },
@@ -106,7 +106,7 @@
           "at": "2026-02-22T14:57:59.111Z",
           "type": "read",
           "path": "notes/rollback-plan.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
           "ok": true
         },
         {
@@ -114,14 +114,14 @@
           "at": "2026-02-22T14:57:59.519Z",
           "type": "read",
           "path": "metrics/drift.csv",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
           "ok": true
         },
         {
           "step": 6,
           "at": "2026-02-22T14:57:59.519Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "reason": "partner payload detail parked while validating rollback threshold",
           "ok": true
         },
@@ -129,7 +129,7 @@
           "step": 7,
           "at": "2026-02-22T14:57:59.519Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "reason": "recall initial alert-softening timestamp for final timeline",
           "ok": true
         },
@@ -137,7 +137,7 @@
           "step": 8,
           "at": "2026-02-22T14:57:59.519Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
           "reason": "rollback criterion extracted; no longer active",
           "ok": true
         },
@@ -146,14 +146,14 @@
           "at": "2026-02-22T14:57:59.926Z",
           "type": "read",
           "path": "comm/status-draft.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
           "ok": true
         },
         {
           "step": 10,
           "at": "2026-02-22T14:57:59.926Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
           "reason": "status framing extracted for summary tone",
           "ok": true
         },
@@ -161,7 +161,7 @@
           "step": 11,
           "at": "2026-02-22T14:57:59.926Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "reason": "recall partner payload failure point for causal chain",
           "ok": true
         },
@@ -169,7 +169,7 @@
           "step": 12,
           "at": "2026-02-22T14:57:59.926Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
           "reason": "drift trend already captured for synthesis",
           "ok": true
         }
@@ -193,7 +193,7 @@
           "metadataCount": 1,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
           ]
         },
         {
@@ -204,19 +204,19 @@
           "metadataCount": 2,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
           ]
         },
         {
           "at": "2026-02-22T14:57:58.706Z",
           "step": 3,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "activeCount": 2,
           "metadataCount": 2,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
           ]
         },
         {
@@ -227,8 +227,8 @@
           "metadataCount": 3,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md"
           ]
         },
         {
@@ -239,46 +239,46 @@
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.519Z",
           "step": 6,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "activeCount": 3,
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.519Z",
           "step": 7,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "activeCount": 4,
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.519Z",
           "step": 8,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
           "activeCount": 3,
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
           ]
         },
         {
@@ -289,46 +289,46 @@
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.926Z",
           "step": 10,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.926Z",
           "step": 11,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "activeCount": 4,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
           ]
         },
         {
           "at": "2026-02-22T14:57:59.926Z",
           "step": 12,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-1-forget-recall-multi-1771772276596",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md"
           ]
         }
       ]
@@ -389,14 +389,14 @@
           {
             "step": 9,
             "at": "2026-02-22T14:58:08.441Z",
-            "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+            "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
             "mode": "reactivate-after-deactivate",
             "reason": "re-open A statement to compare with B against queue trend"
           },
           {
             "step": 11,
             "at": "2026-02-22T14:58:08.441Z",
-            "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+            "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
             "mode": "reactivate-after-deactivate",
             "reason": "re-open A raw evidence for final confidence weighting"
           }
@@ -408,7 +408,7 @@
           "at": "2026-02-22T14:58:06.819Z",
           "type": "read",
           "path": "hypothesis/A.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "ok": true
         },
         {
@@ -416,14 +416,14 @@
           "at": "2026-02-22T14:58:07.227Z",
           "type": "read",
           "path": "evidence/partner-sample.log",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "ok": true
         },
         {
           "step": 3,
           "at": "2026-02-22T14:58:07.227Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "reason": "switching to alternative hypothesis set B",
           "ok": true
         },
@@ -432,7 +432,7 @@
           "at": "2026-02-22T14:58:07.632Z",
           "type": "read",
           "path": "hypothesis/B.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
           "ok": true
         },
         {
@@ -440,7 +440,7 @@
           "at": "2026-02-22T14:58:08.036Z",
           "type": "read",
           "path": "evidence/retry-metrics.log",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
           "ok": true
         },
         {
@@ -448,14 +448,14 @@
           "at": "2026-02-22T14:58:08.441Z",
           "type": "read",
           "path": "evidence/queue-metrics.csv",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
           "ok": true
         },
         {
           "step": 7,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "reason": "A evidence parked while pressure-testing B with queue trend",
           "ok": true
         },
@@ -463,7 +463,7 @@
           "step": 8,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
           "reason": "B statement extracted; focus on quantitative trend",
           "ok": true
         },
@@ -471,7 +471,7 @@
           "step": 9,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "reason": "re-open A statement to compare with B against queue trend",
           "ok": true
         },
@@ -479,7 +479,7 @@
           "step": 10,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
           "reason": "queue trend captured for decision",
           "ok": true
         },
@@ -487,7 +487,7 @@
           "step": 11,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "reason": "re-open A raw evidence for final confidence weighting",
           "ok": true
         },
@@ -495,7 +495,7 @@
           "step": 12,
           "at": "2026-02-22T14:58:08.441Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
           "reason": "retry evidence already compared and summarized",
           "ok": true
         }
@@ -519,7 +519,7 @@
           "metadataCount": 1,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
           ]
         },
         {
@@ -530,19 +530,19 @@
           "metadataCount": 2,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
           ]
         },
         {
           "at": "2026-02-22T14:58:07.227Z",
           "step": 3,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "activeCount": 2,
           "metadataCount": 2,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
           ]
         },
         {
@@ -553,8 +553,8 @@
           "metadataCount": 3,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md"
           ]
         },
         {
@@ -565,9 +565,9 @@
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log"
           ]
         },
         {
@@ -578,85 +578,85 @@
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 7,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "activeCount": 4,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 8,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 9,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "activeCount": 4,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 10,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 11,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "activeCount": 4,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
           ]
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
           "step": 12,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-2-competing-hypotheses-base-1771772285191",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log"
           ]
         }
       ]
@@ -725,7 +725,7 @@
           {
             "step": 15,
             "at": "2026-02-22T14:58:17.748Z",
-            "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+            "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
             "mode": "reactivate-after-deactivate",
             "reason": "return to earlier consumer-health evidence for final causal summary"
           }
@@ -737,7 +737,7 @@
           "at": "2026-02-22T14:58:15.321Z",
           "type": "read",
           "path": "main/investigation-notes.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
           "ok": true
         },
         {
@@ -745,7 +745,7 @@
           "at": "2026-02-22T14:58:15.726Z",
           "type": "read",
           "path": "main/post-rollback.log",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "ok": true
         },
         {
@@ -753,14 +753,14 @@
           "at": "2026-02-22T14:58:16.130Z",
           "type": "read",
           "path": "main/consumer-health.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "ok": true
         },
         {
           "step": 4,
           "at": "2026-02-22T14:58:16.130Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
           "reason": "problem frame captured; moving to interruption request",
           "ok": true
         },
@@ -769,7 +769,7 @@
           "at": "2026-02-22T14:58:16.535Z",
           "type": "read",
           "path": "interrupt-1/exec-ask.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
           "ok": true
         },
         {
@@ -777,14 +777,14 @@
           "at": "2026-02-22T14:58:16.939Z",
           "type": "read",
           "path": "interrupt-1/impact.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
           "ok": true
         },
         {
           "step": 7,
           "at": "2026-02-22T14:58:16.940Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
           "reason": "interruption #1 answered",
           "ok": true
         },
@@ -792,7 +792,7 @@
           "step": 8,
           "at": "2026-02-22T14:58:16.940Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
           "reason": "impact snippet extracted; returning to root-cause flow",
           "ok": true
         },
@@ -800,7 +800,7 @@
           "step": 9,
           "at": "2026-02-22T14:58:16.940Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "reason": "resume main flow from post-rollback behavior evidence",
           "ok": true
         },
@@ -808,7 +808,7 @@
           "step": 10,
           "at": "2026-02-22T14:58:16.940Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "reason": "consumer restart evidence parked during security interruption",
           "ok": true
         },
@@ -817,7 +817,7 @@
           "at": "2026-02-22T14:58:17.344Z",
           "type": "read",
           "path": "interrupt-2/sec-ask.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
           "ok": true
         },
         {
@@ -825,14 +825,14 @@
           "at": "2026-02-22T14:58:17.748Z",
           "type": "read",
           "path": "interrupt-2/sec-note.md",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
           "ok": true
         },
         {
           "step": 13,
           "at": "2026-02-22T14:58:17.748Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
           "reason": "security check request handled",
           "ok": true
         },
@@ -840,7 +840,7 @@
           "step": 14,
           "at": "2026-02-22T14:58:17.748Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
           "reason": "security conclusion extracted",
           "ok": true
         },
@@ -848,7 +848,7 @@
           "step": 15,
           "at": "2026-02-22T14:58:17.748Z",
           "type": "activate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "reason": "return to earlier consumer-health evidence for final causal summary",
           "ok": true
         },
@@ -856,7 +856,7 @@
           "step": 16,
           "at": "2026-02-22T14:58:17.748Z",
           "type": "deactivate",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "reason": "post-rollback log already integrated",
           "ok": true
         }
@@ -880,7 +880,7 @@
           "metadataCount": 1,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md"
           ]
         },
         {
@@ -891,8 +891,8 @@
           "metadataCount": 2,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
           ]
         },
         {
@@ -903,21 +903,21 @@
           "metadataCount": 3,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:16.130Z",
           "step": 4,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
           "activeCount": 3,
           "metadataCount": 3,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         },
         {
@@ -928,9 +928,9 @@
           "metadataCount": 4,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md"
           ]
         },
         {
@@ -941,58 +941,58 @@
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
           "step": 7,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
           "activeCount": 4,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
           "step": 8,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
           "step": 9,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "activeCount": 3,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
           "step": 10,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "activeCount": 2,
           "metadataCount": 5,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
           ]
         },
         {
@@ -1003,8 +1003,8 @@
           "metadataCount": 6,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md"
           ]
         },
         {
@@ -1015,55 +1015,55 @@
           "metadataCount": 7,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
           "step": 13,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
           "activeCount": 3,
           "metadataCount": 7,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
           "step": 14,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
           "activeCount": 2,
           "metadataCount": 7,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log"
           ]
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
           "step": 15,
-          "label": "after activate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "label": "after activate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "activeCount": 3,
           "metadataCount": 7,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
           "step": 16,
-          "label": "after deactivate:file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "label": "after deactivate:file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "activeCount": 2,
           "metadataCount": 7,
           "activeIds": [
             "chat:exp-3-longflow-interruptions-1771772293696",
-            "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
+            "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md"
           ]
         }
       ]
@@ -1122,31 +1122,31 @@
       "deactivationEvents": [
         {
           "at": "2026-02-22T14:57:58.706Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/ops-log.md",
           "reason": "captured early timeline anchors; shifting to thresholds",
           "ok": true
         },
         {
           "at": "2026-02-22T14:57:59.519Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/timeline/gateway-log.md",
           "reason": "partner payload detail parked while validating rollback threshold",
           "ok": true
         },
         {
           "at": "2026-02-22T14:57:59.519Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/notes/rollback-plan.md",
           "reason": "rollback criterion extracted; no longer active",
           "ok": true
         },
         {
           "at": "2026-02-22T14:57:59.926Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/comm/status-draft.md",
           "reason": "status framing extracted for summary tone",
           "ok": true
         },
         {
           "at": "2026-02-22T14:57:59.926Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-1-forget-recall-multi/metrics/drift.csv",
           "reason": "drift trend already captured for synthesis",
           "ok": true
         }
@@ -1204,31 +1204,31 @@
       "deactivationEvents": [
         {
           "at": "2026-02-22T14:58:07.227Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/A.md",
           "reason": "switching to alternative hypothesis set B",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/partner-sample.log",
           "reason": "A evidence parked while pressure-testing B with queue trend",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/hypothesis/B.md",
           "reason": "B statement extracted; focus on quantitative trend",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/queue-metrics.csv",
           "reason": "queue trend captured for decision",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:08.441Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-2-competing-hypotheses-base/evidence/retry-metrics.log",
           "reason": "retry evidence already compared and summarized",
           "ok": true
         }
@@ -1294,43 +1294,43 @@
       "deactivationEvents": [
         {
           "at": "2026-02-22T14:58:16.130Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/investigation-notes.md",
           "reason": "problem frame captured; moving to interruption request",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/exec-ask.md",
           "reason": "interruption #1 answered",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-1/impact.md",
           "reason": "impact snippet extracted; returning to root-cause flow",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:16.940Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/consumer-health.md",
           "reason": "consumer restart evidence parked during security interruption",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-ask.md",
           "reason": "security check request handled",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/interrupt-2/sec-note.md",
           "reason": "security conclusion extracted",
           "ok": true
         },
         {
           "at": "2026-02-22T14:58:17.748Z",
-          "id": "file:/workspace/pi-memory/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
+          "id": "file:/workspace/self-context-manager/tmp/context-behavior-batch3-2026-02-22T14-57-56-595Z/exp-3-longflow-interruptions/main/post-rollback.log",
           "reason": "post-rollback log already integrated",
           "ok": true
         }

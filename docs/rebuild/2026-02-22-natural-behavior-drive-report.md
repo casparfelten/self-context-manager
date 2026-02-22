@@ -7,7 +7,7 @@ Blocked before live drive execution.
 
 ## What was built
 - `scripts/natural-behavior-drive.mjs`
-  - Instantiates `PiMemoryPhase3Extension`
+  - Instantiates `SelfContextManager`
   - Connects to real XTDB (`http://172.17.0.1:3000` by default)
   - Runs a real OpenAI tool-calling loop (Chat Completions API) with tools mapped to extension APIs:
     - `read`, `activate`, `deactivate`, `ls`, `find`, `grep`, `write`, `status`

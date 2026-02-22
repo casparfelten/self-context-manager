@@ -1,7 +1,7 @@
 {
   "startedAt": "2026-02-22T12:12:08.610Z",
   "xtdbBaseUrl": "http://172.17.0.1:3000",
-  "workspaceRoot": "/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z",
+  "workspaceRoot": "/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z",
   "sessionId": "five-live-drives-1771762328610",
   "scenarios": {
     "scenario1": {
@@ -23,8 +23,8 @@
           "at": "2026-02-22T12:12:13.176Z",
           "event": "read selected files",
           "ids": [
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
           ]
         },
         {
@@ -32,7 +32,7 @@
           "event": "deactivated one file",
           "result": {
             "ok": true,
-            "message": "deactivated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md"
+            "message": "deactivated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md"
           }
         }
       ],
@@ -56,8 +56,8 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
           ],
           "pinnedIds": []
         },
@@ -69,19 +69,19 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
           ],
           "pinnedIds": []
         }
       ],
       "ids": {
         "readIds": [
-          "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
-          "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
+          "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md",
+          "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts"
         ],
         "deactivateResult": {
           "ok": true,
-          "message": "deactivated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md"
+          "message": "deactivated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/a/alpha.md"
         }
       },
       "invoked": {
@@ -116,7 +116,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-0",
             "tc-heavy-1",
             "tc-heavy-2",
@@ -136,7 +136,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7"
@@ -178,7 +178,7 @@
           "i": 6,
           "res": {
             "ok": true,
-            "message": "deactivated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+            "message": "deactivated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
           }
         },
         {
@@ -193,7 +193,7 @@
           "i": 12,
           "res": {
             "ok": true,
-            "message": "activated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+            "message": "activated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
           }
         },
         {
@@ -218,7 +218,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7"
@@ -233,7 +233,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7"
@@ -248,7 +248,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7"
@@ -263,7 +263,7 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7"
@@ -278,11 +278,11 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
           ],
           "pinnedIds": []
         },
@@ -294,11 +294,11 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
           ],
           "pinnedIds": []
         },
@@ -310,17 +310,17 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
           ],
           "pinnedIds": []
         }
       ],
       "ids": {
-        "fileId": "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
+        "fileId": "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log"
       },
       "invoked": {
         "wrappedWrite": true,
@@ -357,7 +357,7 @@
           "event": "pin before close",
           "pinRes": {
             "ok": true,
-            "message": "pinned file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "message": "pinned file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           }
         },
         {
@@ -373,7 +373,7 @@
           "event": "unpin after reload",
           "unpinRes": {
             "ok": true,
-            "message": "unpinned file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "message": "unpinned file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           }
         }
       ],
@@ -386,15 +386,15 @@
           "pinnedCount": 1,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ],
           "pinnedIds": [
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ]
         },
         {
@@ -405,15 +405,15 @@
           "pinnedCount": 1,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ],
           "pinnedIds": [
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ]
         },
         {
@@ -424,18 +424,18 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ],
           "pinnedIds": []
         }
       ],
       "ids": {
-        "fileId": "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+        "fileId": "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
       },
       "invoked": {
         "pin": true,
@@ -459,24 +459,24 @@
           "event": "recovery operations",
           "rr": {
             "ok": true,
-            "message": "read ok id=file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt",
-            "id": "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "message": "read ok id=file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt",
+            "id": "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           },
           "pinOk": {
             "ok": true,
-            "message": "pinned file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "message": "pinned file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           },
           "deactOk": {
             "ok": true,
-            "message": "deactivated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "message": "deactivated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           },
           "reactOk": {
             "ok": true,
-            "message": "activated file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "message": "activated file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           },
           "unpinOk": {
             "ok": true,
-            "message": "unpinned file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "message": "unpinned file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           }
         }
       ],
@@ -489,12 +489,12 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md"
           ],
           "pinnedIds": []
         },
@@ -506,19 +506,19 @@
           "pinnedCount": 0,
           "activeIds": [
             "chat:five-live-drives-1771762328610",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/research/b/gamma.ts",
             "tc-heavy-5",
             "tc-heavy-6",
             "tc-heavy-7",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md",
-            "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/longrun/stream.log",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/continuity/state.md",
+            "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
           ],
           "pinnedIds": []
         }
       ],
       "ids": {
-        "recoveryId": "file:/workspace/pi-memory/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
+        "recoveryId": "file:/workspace/self-context-manager/tmp/five-live-drives-2026-02-22T12-12-08-610Z/recover/ok.txt"
       },
       "invoked": {
         "deactivate": true,

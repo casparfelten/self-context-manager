@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
-import { PiMemoryPhase3Extension } from '../dist/src/phase3-extension.js';
+import { SelfContextManager } from '../dist/src/phase3-extension.js';
 
 const xtdbBaseUrl = process.env.XTDB_URL || 'http://172.17.0.1:3000';
 const runId = new Date().toISOString().replace(/[:.]/g, '-');
@@ -38,7 +38,7 @@ async function runExperiment({ id, variant, systemPrompt, taskShape, seedFiles, 
     await put(`${id}/${path}`, content);
   }
 
-  const ext = new PiMemoryPhase3Extension({ sessionId, workspaceRoot, xtdbBaseUrl, systemPrompt });
+  const ext = new SelfContextManager({ sessionId, workspaceRoot, xtdbBaseUrl, systemPrompt });
   await ext.load();
 
   const startedAt = Date.now();

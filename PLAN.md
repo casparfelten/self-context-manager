@@ -1,4 +1,4 @@
-# pi-memory — Build Plan
+# self-context-manager — Build Plan
 
 ## What this is
 
@@ -10,7 +10,7 @@ A context management layer that slots into Pi coding agent as an extension. It g
 
 ```
 Pi coding agent (host harness)
-  └── pi-memory extension
+  └── self-context-manager extension
         ├── Pi adapter (transformContext, convertToLlm, tool registration)
         ├── Context manager (three pools: metadata, chat history, active content)
         ├── Object store (TypeScript client for XTDB HTTP API)
@@ -194,6 +194,6 @@ XTDB standalone (v1.x) with SQLite backend:
 
 - You have internet access in your sandbox. Install what you need.
 - Use `vitest` for testing.
-- Commit after each phase. Push to `casparfelten/pi-memory`.
+- Commit after each phase. Push to `casparfelten/self-context-manager`.
 - If you hit a blocker (missing package, API not working as expected, extension API limitation), document it clearly in your output. Don't guess or work around silently.
 - Read the spec docs in `docs/spec/` before starting each phase. They are detailed and answer most questions.

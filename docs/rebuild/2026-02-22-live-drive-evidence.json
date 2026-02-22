@@ -1,7 +1,7 @@
 {
   "startedAt": "2026-02-22T04:59:09.639Z",
   "xtdbBaseUrl": "http://172.17.0.1:3000",
-  "workspaceRoot": "/workspace/pi-memory/tmp/live-drive-workspace",
+  "workspaceRoot": "/workspace/self-context-manager/tmp/live-drive-workspace",
   "sessionId": "live-drive-1771736349639",
   "timeline": [
     {
@@ -36,19 +36,19 @@
       "at": "2026-02-22T04:59:12.568Z",
       "event": "read",
       "ok": true,
-      "message": "read ok id=file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
-      "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt"
+      "message": "read ok id=file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
+      "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt"
     },
     {
       "at": "2026-02-22T04:59:12.569Z",
       "event": "activate/deactivate",
       "deactivateResult": {
         "ok": true,
-        "message": "deactivated file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt"
+        "message": "deactivated file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt"
       },
       "activateResult": {
         "ok": true,
-        "message": "activated file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt"
+        "message": "activated file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt"
       }
     },
     {
@@ -66,7 +66,7 @@
       "at": "2026-02-22T04:59:12.975Z",
       "event": "longrun:start",
       "path": "notes/longrun.log",
-      "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log"
+      "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log"
     },
     {
       "at": "2026-02-22T04:59:25.784Z",
@@ -115,13 +115,13 @@
   "checks": {
     "activeBeforeClose": [
       "chat:live-drive-1771736349639",
-      "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+      "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
       "tc-live-1"
     ],
     "metadataCountBeforeClose": 4,
     "activeAfterReload": [
       "chat:live-drive-1771736349639",
-      "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+      "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
       "tc-live-1"
     ],
     "metadataCountAfterReload": 4,
@@ -154,28 +154,28 @@
       "chat_ref": "chat:live-drive-1771736349639",
       "active_set": [
         "chat:live-drive-1771736349639",
-        "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+        "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
         "tc-live-1"
       ],
       "inactive_set": [
-        "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/discovered.txt",
-        "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log"
+        "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/discovered.txt",
+        "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log"
       ],
       "metadata_pool": [
         {
-          "path": "/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+          "path": "/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
           "file_type": "txt",
           "char_count": 21,
           "type": "file",
-          "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+          "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
           "mtime_ms": 1771736351345.4736
         },
         {
-          "path": "/workspace/pi-memory/tmp/live-drive-workspace/notes/discovered.txt",
+          "path": "/workspace/self-context-manager/tmp/live-drive-workspace/notes/discovered.txt",
           "file_type": "txt",
           "char_count": 11,
           "type": "file",
-          "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/discovered.txt",
+          "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/discovered.txt",
           "mtime_ms": 1771736350929.471
         },
         {
@@ -185,11 +185,11 @@
           "id": "tc-live-1"
         },
         {
-          "path": "/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log",
+          "path": "/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log",
           "file_type": "log",
           "char_count": 602,
           "type": "file",
-          "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log",
+          "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log",
           "mtime_ms": 1771736421445.9202
         }
       ],
@@ -199,23 +199,23 @@
       "xt/id": "session:live-drive-1771736349639"
     },
     "longEntity": {
-      "path": "/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log",
+      "path": "/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log",
       "file_type": "log",
       "content": "tick-0\ntick-1 @ 2026-02-22T04:59:12.975Z\ntick-2 @ 2026-02-22T04:59:16.976Z\ntick-3 @ 2026-02-22T04:59:20.977Z\ntick-4 @ 2026-02-22T04:59:24.979Z\ntick-5 @ 2026-02-22T04:59:29.785Z\ntick-6 @ 2026-02-22T04:59:33.791Z\ntick-7 @ 2026-02-22T04:59:37.795Z\ntick-8 @ 2026-02-22T04:59:41.798Z\ntick-9 @ 2026-02-22T04:59:46.602Z\ntick-10 @ 2026-02-22T04:59:50.606Z\ntick-11 @ 2026-02-22T04:59:54.611Z\ntick-12 @ 2026-02-22T04:59:58.614Z\ntick-13 @ 2026-02-22T05:00:03.420Z\ntick-14 @ 2026-02-22T05:00:07.427Z\ntick-15 @ 2026-02-22T05:00:11.431Z\ntick-16 @ 2026-02-22T05:00:15.434Z\ntick-after-close @ 2026-02-22T05:00:21.449Z\n",
       "char_count": 602,
       "type": "file",
       "content_hash": "84848535f77a4c77beff567bbca836119d85469ec17cd6e6afa14ad427152a24",
       "locked": false,
-      "id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log",
+      "id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log",
       "provenance": {
         "generator": "tool",
-        "origin": "/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log"
+        "origin": "/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log"
       },
-      "xt/id": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log",
+      "xt/id": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log",
       "object_hash": "aa91add4888748d138fa83d0e522502ec99a8c38b036d52ec506da6c75c4bfaf",
       "metadata_view_hash": "27a19a0a5a88a239f8f8af67de8182bffaad6b7e0f29dd2fb3bb5814724f1814"
     },
-    "readId": "file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt",
+    "readId": "file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt",
     "transformPreview": [
       {
         "role": "system",
@@ -223,7 +223,7 @@
       },
       {
         "role": "user",
-        "content": "METADATA_POOL\n- id=file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt type=file path=/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt file_type=txt char_count=21\n- id=file:/workspace/pi-memory/tmp/live-drive-workspace/notes/discovered.txt type=file path=/workspace/pi-memory/tmp/live-drive-workspace/notes/discovered.txt file_type=txt char_count=0\n- id=tc-live-1 type=toolcall tool=bash status=ok"
+        "content": "METADATA_POOL\n- id=file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt type=file path=/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt file_type=txt char_count=21\n- id=file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/discovered.txt type=file path=/workspace/self-context-manager/tmp/live-drive-workspace/notes/discovered.txt file_type=txt char_count=0\n- id=tc-live-1 type=toolcall tool=bash status=ok"
       },
       {
         "role": "user",
@@ -265,7 +265,7 @@
       },
       {
         "role": "user",
-        "content": "ACTIVE_CONTENT id=file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt\nline-0\nline-1-edited\n"
+        "content": "ACTIVE_CONTENT id=file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt\nline-0\nline-1-edited\n"
       }
     ]
   },

@@ -1,4 +1,4 @@
-# Pi-Memory Strict Rebuild — Final Completion Report (2026-02-22)
+# Self-Context-Manager Strict Rebuild — Final Completion Report (2026-02-22)
 
 ## Executive summary (final status)
 
@@ -149,7 +149,7 @@ Final observed run:
 
 ## Repro commands
 
-From repo root (`/home/abaris/src/pi-memory`):
+From repo root (`/home/abaris/src/self-context-manager`):
 
 ```bash
 # Build

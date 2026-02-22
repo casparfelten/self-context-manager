@@ -1,7 +1,7 @@
 import { mkdir, writeFile, appendFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { PiMemoryPhase3Extension } from '../dist/src/phase3-extension.js';
+import { SelfContextManager } from '../dist/src/phase3-extension.js';
 import { XtdbClient } from '../dist/src/xtdb-client.js';
 
 const xtdbBaseUrl = process.env.XTDB_URL || 'http://172.17.0.1:3000';
@@ -41,7 +41,7 @@ function toolResult(id, text, ts, isError = false, toolName = 'bash') {
 await rm(workspaceRoot, { recursive: true, force: true });
 await mkdir(workspaceRoot, { recursive: true });
 
-const ext = new PiMemoryPhase3Extension({
+const ext = new SelfContextManager({
   sessionId,
   workspaceRoot,
   systemPrompt: 'Five live drives',
@@ -198,7 +198,7 @@ await ext.load();
   await appendFile(resolve(workspaceRoot, p), 'v2-while-down\n', 'utf8');
   note('mutated file while down');
 
-  const extReload = new PiMemoryPhase3Extension({ sessionId, workspaceRoot, systemPrompt: 'Five live drives', xtdbBaseUrl });
+  const extReload = new SelfContextManager({ sessionId, workspaceRoot, systemPrompt: 'Five live drives', xtdbBaseUrl });
   await extReload.load();
   scenario.invoked.reload = true;
   scenario.counts.push(snapshot(extReload, 'after reload'));
@@ -217,7 +217,7 @@ await ext.load();
   evidence.scenarios.scenario4 = scenario;
 
   // open again for scenario 5 continuation
-  const extAgain = new PiMemoryPhase3Extension({ sessionId, workspaceRoot, systemPrompt: 'Five live drives', xtdbBaseUrl });
+  const extAgain = new SelfContextManager({ sessionId, workspaceRoot, systemPrompt: 'Five live drives', xtdbBaseUrl });
   await extAgain.load();
   evidence._extForScenario5 = true;
   globalThis.__extAgain = extAgain;

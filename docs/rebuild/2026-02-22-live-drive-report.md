@@ -11,10 +11,10 @@ I ran the Phase3 extension against **real XTDB** (`http://172.17.0.1:3000`) in a
 ## What was actually driven live
 
 ### Environment
-- Repo: `~/pi-memory`
+- Repo: `~/self-context-manager`
 - Branch: `live-drive/actual-use-2026-02-22`
 - XTDB: `http://172.17.0.1:3000` (no mocks)
-- Workspace used by runner: `/workspace/pi-memory/tmp/live-drive-workspace`
+- Workspace used by runner: `/workspace/self-context-manager/tmp/live-drive-workspace`
 - Session id: `live-drive-1771736349639`
 
 ### Runner script added
@@ -22,7 +22,7 @@ I ran the Phase3 extension against **real XTDB** (`http://172.17.0.1:3000`) in a
 
 ### Exact command(s) used
 ```bash
-cd ~/pi-memory
+cd ~/self-context-manager
 node scripts/live-drive-actual-use.mjs
 ```
 
@@ -62,7 +62,7 @@ Primary evidence artifact:
 - `wrappedWrite`/`wrappedEdit`: persisted file body + metadata; updates reflected in XTDB entity char counts.
 - `wrappedLs`/`wrappedFind`/`wrappedGrep`: discovered files inserted as metadata/file objects; grep parsing by `path:` prefix worked.
 - `read(path)`: returned `ok` and concrete id:  
-  `file:/workspace/pi-memory/tmp/live-drive-workspace/notes/live.txt`
+  `file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/live.txt`
 - `activate`/`deactivate`: both succeeded on readable file id.
 - `transformContext`: output included:
   - `METADATA_POOL` user block,
@@ -71,7 +71,7 @@ Primary evidence artifact:
 - `observeToolExecutionEnd('bash', ...)`: accepted bash command string with path-like tokens; no errors and path discovery flow remained consistent.
 
 ### Long-running task outcomes (~72s)
-- File: `file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log`
+- File: `file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log`
 - Loop: 16 appends every ~4s (+ initial write), watcher active during run.
 - XTDB history growth during run:
   - i=4: len 5
@@ -91,7 +91,7 @@ Primary evidence artifact:
 
 ### XTDB evidence snippets
 - Session id: `session:live-drive-1771736349639`
-- Long-run file id: `file:/workspace/pi-memory/tmp/live-drive-workspace/notes/longrun.log`
+- Long-run file id: `file:/workspace/self-context-manager/tmp/live-drive-workspace/notes/longrun.log`
 - History first/last sample (queried live):
   - first: `{"txTime":"2026-02-22T04:59:12Z","txId":1373,"validTime":"2026-02-22T04:59:12Z",...}`
   - last: `{"txTime":"2026-02-22T05:00:22Z","txId":1565,"validTime":"2026-02-22T05:00:22Z",...}`

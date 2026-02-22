@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, expect, it } from 'vitest';
-import { PiMemoryPhase3Extension, type HarnessMessage } from '../src/index.js';
+import { SelfContextManager, type HarnessMessage } from '../src/index.js';
 
 function text(value: string) {
   return [{ type: 'text' as const, text: value }];
@@ -11,10 +11,10 @@ function text(value: string) {
 
 describe('e2e final - realistic lifecycle and continuity', () => {
   it('covers extension load, wrapped discovery/write/edit, activation flow, metadata refs, and cursor replacement ordering', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-e2e-final-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-e2e-final-'));
     await writeFile(join(root, 'alpha.md'), 'alpha-v1', 'utf8');
 
-    const ext = new PiMemoryPhase3Extension({
+    const ext = new SelfContextManager({
       sessionId: `s-${Date.now()}-e2e-lifecycle`,
       workspaceRoot: root,
       systemPrompt: 'SYS-E2E',
@@ -93,14 +93,14 @@ describe('e2e final - realistic lifecycle and continuity', () => {
   });
 
   it('covers watcher update + tombstone delete + session save/reload continuity', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'pi-memory-e2e-final-'));
+    const root = await mkdtemp(join(tmpdir(), 'scm-e2e-final-'));
     const trackedPath = join(root, 'tracked.md');
     const resumePath = join(root, 'resume.md');
     await writeFile(trackedPath, 'tracked-v1', 'utf8');
     await writeFile(resumePath, 'resume-v1', 'utf8');
 
     const sessionId = `s-${Date.now()}-e2e-resume`;
-    const ext1 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS-E2E' });
+    const ext1 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS-E2E' });
     await ext1.load();
 
     const tracked = await ext1.read('tracked.md');
@@ -122,7 +122,7 @@ describe('e2e final - realistic lifecycle and continuity', () => {
 
     await writeFile(resumePath, 'resume-v2-while-down', 'utf8');
 
-    const ext2 = new PiMemoryPhase3Extension({ sessionId, workspaceRoot: root, systemPrompt: 'SYS-E2E' });
+    const ext2 = new SelfContextManager({ sessionId, workspaceRoot: root, systemPrompt: 'SYS-E2E' });
     await ext2.load();
 
     const snap = ext2.getSnapshot();

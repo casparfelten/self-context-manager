@@ -1,9 +1,9 @@
-# Pi-Memory Rebuild Decision Log — 2026-02-22
+# Self-Context-Manager Rebuild Decision Log — 2026-02-22
 
 ## Scope and constraints
 
 **Run scope**
-- Rebuild run decision record for pi-memory.
+- Rebuild run decision record for self-context-manager.
 - Capture decisions, rationale, rejected alternatives, and verification evidence by phase.
 - This document is the auditable trail for go/no-go and merge readiness.
 
