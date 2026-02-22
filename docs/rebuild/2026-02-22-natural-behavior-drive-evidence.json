@@ -1,0 +1,16 @@
+{
+  "startedAt": "2026-02-22T12:55:00.000Z",
+  "status": "blocked",
+  "blocker": "OPENAI_API_KEY is required but not set in environment",
+  "xtdbBaseUrl": "http://172.17.0.1:3000",
+  "script": "scripts/natural-behavior-drive.mjs",
+  "runAttempt": {
+    "command": "node scripts/natural-behavior-drive.mjs",
+    "exitCode": 1,
+    "error": "OPENAI_API_KEY is required"
+  },
+  "trajectory": [],
+  "toolCalls": [],
+  "deactivationEvents": [],
+  "reactivations": []
+}
