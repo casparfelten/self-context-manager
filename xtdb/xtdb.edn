@@ -1,0 +1,7 @@
+{:xtdb.http-server/server {:port 3000}
+ :xtdb/index-store {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                :db-dir "/home/abaris/src/pi-memory/data/idx"}}
+ :xtdb/document-store {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                   :db-dir "/home/abaris/src/pi-memory/data/docs"}}
+ :xtdb/tx-log {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                           :db-dir "/home/abaris/src/pi-memory/data/txs"}}}
