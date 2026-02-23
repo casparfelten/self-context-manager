@@ -1,0 +1,4 @@
+DB Notes
+- ledger_events spike 3x at 09:18
+- gateway_events stable
+- missing keys concentrated in partner_b

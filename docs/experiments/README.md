@@ -22,6 +22,18 @@ Hardcoded tool calls exercising the extension API. Validates that activate/deact
 | [context-behavior-experiments-batch2.md](reports/2026-02-22-context-behavior-experiments-batch2.md) | `scripts/context-behavior-batch2.mjs` | Activate/deactivate/recall trajectory shapes |
 | [context-behavior-experiments-batch3.md](reports/2026-02-22-context-behavior-experiments-batch3.md) | `scripts/context-behavior-batch3.mjs` | Forget-recall, competing hypotheses, long-flow with interruptions |
 
+## Fixtures
+
+Seed data for experiments lives in `fixtures/` at repo root:
+- `fixtures/investigation-scenario/` — shared across E1-E4 (logs, tickets, architecture docs, analytics)
+- `fixtures/natural-behavior-scenario/` — expanded variant for the natural-behavior-drive script
+
+Scripts copy from fixtures into a transient `tmp/` dir at runtime.
+
+## LLM-generated outputs
+
+Files the model produced during experiments: [`outputs/`](outputs/).
+
 ## Raw data
 
 JSON evidence files are in [`data/`](data/).

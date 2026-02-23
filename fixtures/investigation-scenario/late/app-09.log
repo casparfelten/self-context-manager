@@ -1,0 +1,4 @@
+[09:15] rollout 100
+[09:17] partner_b missing external_txn_id
+[09:19] retry storm
+[09:24] lag 420s

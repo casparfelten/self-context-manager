@@ -12,13 +12,13 @@ Working prototype. API validated against real XTDB. LLM-driven experiments show 
 src/                        # TypeScript source
 tests/                      # Unit + integration tests (vitest)
 scripts/                    # Experiment scripts + XTDB start/stop
+fixtures/                   # Seed data for experiments (investigation scenarios)
 docs/
   spec/                     # Design spec (SSOT is authoritative)
-  experiments/              # Experiment reports, data, methodology
+  experiments/              # Reports, outputs, data, methodology
   build-notes/              # Build plan, decision log, phase notes
   eval-plan.md              # Evaluation roadmap (ablations, holdout tasks)
 xtdb/                       # XTDB config (jar/logs/pid gitignored)
-tmp/                        # Experiment run outputs (gitignored)
 ```
 
 ## Spec

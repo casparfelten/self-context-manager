@@ -1,0 +1,4 @@
+[08:55] startup complete
+[09:03] rollout step 50%
+[09:09] warning reconcile lag=90s
+[09:12] error duplicate key on recon_state

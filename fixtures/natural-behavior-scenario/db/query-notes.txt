@@ -1,0 +1,4 @@
+Query Notes
+- ledger_events count spiked 3x at 09:18
+- gateway_events steady
+- missing join keys concentrated in partner_b

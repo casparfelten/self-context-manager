@@ -1,0 +1,4 @@
+[09:15] rollout step 100%
+[09:17] error partner_b payload missing external_txn_id
+[09:19] retry storm detected
+[09:24] reconcile lag=420s
