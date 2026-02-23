@@ -117,12 +117,13 @@ This section tracks what exists in the repo, not what the design intends. See se
 
 ### 3.3 Experiment scripts
 
-See `scripts/`. Some use a real LLM agent loop, some are scripted API exercises. Reports in `docs/rebuild/` are labelled accordingly.
+See `scripts/`. Some use a real LLM agent loop (GPT-4.1), some are scripted API exercises. Reports and data in `docs/experiments/` — see its README for which is which.
 
 ### 3.4 What is not yet done
 
 - Not integrated into a live Pi coding agent session (extension API is exercised standalone, not inside Pi's event loop).
-- Evaluation plan (`docs/testing-next-steps.md`) is documented but unstarted: no baseline comparison, no ablations, no long-episode stress tests.
+- Evaluation plan (`docs/eval-plan.md`) is documented but unstarted: no baseline comparison, no ablations, no long-episode stress tests.
+- All LLM-driven experiments used investigation/research scenarios; not yet tested on a coding task.
 - Some design decisions in sections 1-2 remain policy-level rather than enforced in code (e.g. auto-collapse of old tool results, token budget enforcement).
 
 ---

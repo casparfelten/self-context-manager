@@ -1,7 +1,7 @@
 {
   "startedAt": "2026-02-22T13:45:30.124Z",
   "xtdbBaseUrl": "http://172.17.0.1:3000",
-  "methodologyRef": "docs/rebuild/context-behavior-methodology.md",
+  "methodologyRef": "docs/experiments/context-behavior-methodology.md",
   "experiments": [
     {
       "id": "exp-1-control-triage",

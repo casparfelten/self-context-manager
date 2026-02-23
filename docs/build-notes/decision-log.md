@@ -185,7 +185,7 @@
   - Real XTDB required for acceptance evidence
   - No mock-based acceptance claims
   - Keep rebuild changes minimal and clean
-- **Next required updates:** Final report completed (`docs/rebuild/2026-02-22-final-report.md`); run close-out recorded.
+- **Next required updates:** Final report completed (`docs/build-notes/rebuild-final-report.md`); run close-out recorded.
 
 ## Final stage closure
 
@@ -194,5 +194,5 @@
 - **Closure evidence:**
   - Final E2E merge on `main`: `45e753f` (from `d2e9083`, `tests/e2e-final.test.ts`).
   - Full suite progression reached and recorded at close-out: **25/25 tests passing**.
-  - Final completion report published: `docs/rebuild/2026-02-22-final-report.md`.
+  - Final completion report published: `docs/build-notes/rebuild-final-report.md`.
 - **Open blockers at close:** None.

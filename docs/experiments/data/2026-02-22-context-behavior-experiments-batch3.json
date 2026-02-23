@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-22T14:58:24.616Z",
-  "methodologyRef": "docs/rebuild/context-behavior-methodology.md",
+  "methodologyRef": "docs/experiments/context-behavior-methodology.md",
   "xtdbBaseUrl": "http://172.17.0.1:3000",
   "promptPolicy": {
     "startPolicy": "Keep active context intentionally small. Use metadata-first scanning; activate only what is needed now. When focus changes, deactivate stale items with a concrete reason. Recall previously deactivated evidence only when synthesis needs it.",

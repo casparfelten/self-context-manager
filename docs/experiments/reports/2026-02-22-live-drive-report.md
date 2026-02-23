@@ -42,7 +42,7 @@ node scripts/live-drive-actual-use.mjs
 ## Evidence highlights
 
 Primary evidence artifact:
-- `docs/rebuild/2026-02-22-live-drive-evidence.json`
+- `docs/experiments/data/2026-02-22-live-drive-evidence.json`
 
 ### Timeline (UTC)
 - `04:59:09` load start

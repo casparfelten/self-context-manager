@@ -3,7 +3,7 @@
 > **Scripted (no LLM).** Activate/deactivate/recall calls are hardcoded in `scripts/context-behavior-batch2.mjs`. Validates API mechanics and trajectory shapes, not model decision-making.
 
 - XTDB endpoint: `http://172.17.0.1:3000` (real)
-- Method: `docs/rebuild/context-behavior-methodology.md`
+- Method: `docs/experiments/context-behavior-methodology.md`
 
 ## exp-1-control-triage
 - Variant/task: control / broad triage across noisy files

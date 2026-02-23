@@ -6,7 +6,7 @@ Environment used:
 - Repo branch: `live-drive/five-scenarios-2026-02-22`
 - Runtime class: `SelfContextManager`
 - XTDB: `http://172.17.0.1:3000` (real service)
-- Evidence file: `docs/rebuild/2026-02-22-five-live-drives-evidence.json`
+- Evidence file: `docs/experiments/data/2026-02-22-five-live-drives-evidence.json`
 
 ## Executive verdict
 Context management APIs are functionally working (`activate`/`deactivate`/`pin`/`unpin` all executed live and persisted correctly), but **context management is not being used correctly by default behavior** in long workflows: active context tends to accumulate unless explicit deactivation is applied as an operational policy.
