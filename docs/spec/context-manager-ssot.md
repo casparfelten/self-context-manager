@@ -1,6 +1,6 @@
 # Context Manager SSOT (Single Source of Truth)
 
-> **Authoritative document.** This is the canonical specification for the project's design, data model, and implementation status. If any other document conflicts with this one, this SSOT wins until explicitly updated.
+> **Authoritative document.** If any other document conflicts with this one, this SSOT wins until explicitly updated.
 
 ---
 
@@ -12,27 +12,26 @@ LLM agents lose continuity in long tasks because context windows are limited and
 
 ### 1.2 Goals
 
-- Provide a **context manager layer** — not just a memory bucket, but active control over what an LLM sees each turn.
-- Let agents operate over **objects and references** instead of repeated full-text re-reading.
-- Keep context controllable through explicit **activation and deactivation**.
-- Preserve reproducibility with version-aware references and durable history.
-- Support **multiple agents** sharing a database without interference, and **portable sessions** that can be paused, moved, and resumed.
+- **Context manager layer** — active control over what an LLM sees each turn, not just a memory bucket.
+- **Objects and references** instead of repeated full-text re-reading.
+- **Explicit activation/deactivation** — context is a deliberate subset, not everything ever seen.
+- **Version-aware references** and durable history for reproducibility.
+- **Multi-agent support** — multiple agents sharing a database without interference, portable sessions.
 
 ### 1.3 Principles
 
-- **Separation of concerns.** The host harness runs the agent loop, tools, and UI. This layer controls the LLM-visible context.
-- **Metadata first.** Inactive objects remain visible via compact metadata summaries. The agent browses metadata broadly and activates narrowly.
-- **Explicit context logistics.** Active content is a deliberate subset, not everything ever seen.
-- **Store rich, render adapted.** Preserve structured internal state; adapt at the model/harness boundary.
-- **Append-only history.** Objects accumulate versions. Deletions and orphaning create new versions (null content, tombstone state). History is never erased.
+- **Separation of concerns.** The harness runs the agent loop/tools/UI. This layer controls the LLM-visible context.
+- **Metadata first.** Inactive objects visible via compact summaries. Browse broadly, activate narrowly.
+- **Store rich, render adapted.** Structured internal state; adapted at the model/harness boundary.
+- **Append-only history.** Deletions and orphaning create new versions (null content). History is never erased.
 
 ### 1.4 Invariants
 
 - Objects have stable identity and version history.
-- Chat history remains present as canonical conversation state.
-- Tool result payloads are separate from chat inline metadata references.
-- Active/inactive transitions change what content is loaded, not object identity.
-- Session index is append-only. Content objects are never removed from a session's index once encountered.
+- Chat history is always present as canonical conversation state.
+- Tool result payloads are separate from inline metadata references.
+- Active/inactive transitions change loaded content, not object identity.
+- Session index is append-only — content objects are never removed once encountered.
 
 ---
 
@@ -40,55 +39,56 @@ LLM agents lose continuity in long tasks because context windows are limited and
 
 ### 2.1 Objects
 
-An **object** is a versioned entity in the database. Every object has a stable ID, a type, and a version history. XTDB's bi-temporal store provides the versioning: every write creates a new version; the full history is queryable.
+An **object** is a versioned entity in the database. Every object has a stable ID, a type, and a version history maintained by XTDB's bi-temporal store.
 
-Objects are either **sourced** (bound to an external thing — a file, an S3 object, etc.) or **unsourced** (exist only in the database — tool calls, chat, session state).
+**Two axes classify objects:**
 
-Objects are also categorised by role:
+| | Content | Infrastructure |
+|---|---------|---------------|
+| **Sourced** | `file` | *(future)* |
+| **Unsourced** | `toolcall` | `chat`, `system_prompt`, `session` |
 
-**Content objects** (`file`, `toolcall`) — things the agent works with. These participate in the context management system: they can be activated, deactivated, and appear in the session index, metadata pool, and active set. The agent interacts with them through activate/deactivate/pin tools.
+**Content objects** (`file`, `toolcall`) — the things the agent works with. Participate in the context management system: session index, metadata pool, active set. The agent activates, deactivates, and pins them.
 
-**Infrastructure objects** (`chat`, `system_prompt`, `session`) — session scaffolding. Stored in XTDB for persistence and version history, but do not participate in the content management system. They are referenced by the session wrapper and rendered in fixed positions in the context (system prompt at the top, chat as conversation history). The agent does not activate or deactivate them.
+**Infrastructure objects** (`chat`, `system_prompt`, `session`) — session scaffolding. Stored in XTDB for persistence/versioning. Referenced by the session wrapper and rendered in fixed positions. The agent does not activate or deactivate them.
 
-### 2.2 Object document structure
+**Sourced objects** — bound to an external thing (file on disk, S3 object, etc.). Source binding is immutable. Identity derived from the source.
 
-Every object document stored in XTDB has two zones:
+**Unsourced objects** — exist only in the database. Identity assigned at creation.
 
-**Immutable envelope** — set at creation, never changes across versions:
+### 2.2 Document structure
+
+Every object in XTDB is a flat document. Conceptually it has two zones, but in storage all fields are top-level keys.
+
+#### Immutable envelope
+
+Set at creation, identical across all versions of the same object:
 
 | Field | Description |
 |-------|-------------|
-| `xt/id` | Object ID. For sourced objects, derived from identity hash. For unsourced, assigned at creation (e.g., `chat:{sessionId}`, tool call ID). |
-| `type` | Object type: `file`, `toolcall`, `chat`, `system_prompt`, `session`. |
-| `source` | Source binding. `null` for unsourced objects. Tagged union by source type (see §2.3). |
-| `identity_hash` | SHA-256 of immutable identity fields. Sourced: type + source. Unsourced: type + xt/id. Computed once. See hash table below. |
+| `xt/id` | Object ID. Sourced: derived from `identity_hash`. Unsourced: assigned (e.g., `chat:{sessionId}`, tool call ID). |
+| `type` | `file` \| `toolcall` \| `chat` \| `system_prompt` \| `session` |
+| `source` | Source binding (§2.3). `null` for unsourced objects. |
+| `identity_hash` | Identity verification hash (§2.4). |
 
-**Mutable payload** — creates a new version when changed:
+#### Mutable payload
 
-| Field | Description |
-|-------|-------------|
-| `content` | The payload. String or null (null for deleted/orphaned/non-text). |
-| `source_hash` | SHA-256 of the raw external source (e.g., file bytes on disk). Only present for sourced objects. Used for change detection during indexing (see §5.6). |
-| `content_hash` | SHA-256 of all other mutable payload fields (everything except `source_hash` and `content_hash` itself). Detects document-level changes. See below for exact scope. |
-| *(type-specific fields)* | Additional mutable fields depending on object type — see §2.5 for per-type fields. |
+New version created when any mutable field changes:
 
-No `locked`, `provenance`, or `nickname` fields. Infrastructure objects don't need locking (they're outside the content management system). Provenance is captured by the source binding (for sourced objects) or type-specific fields (for unsourced objects).
+| Field | Present on | Description |
+|-------|-----------|-------------|
+| `content` | All | The payload. String or null. |
+| *(type-specific fields)* | Varies | See §2.6 for per-type fields. |
+| `file_hash` | Sourced files only | SHA-256 of raw file bytes on disk. `null` for discovery stubs. |
+| `content_hash` | All | SHA-256 of the `content` field. `null` if content is null. |
+| `metadata_hash` | All | SHA-256 of type-specific fields (excludes content and all hash fields). |
+| `object_hash` | All | SHA-256 of `{file_hash, content_hash, metadata_hash}`. Full version fingerprint. |
 
-**Hashes — purposes and scope:**
-
-| Hash | Answers | Input | When computed |
-|------|---------|-------|--------------|
-| `identity_hash` | Is this the same object? | Sourced: `type` + `source`. Unsourced: `type` + `xt/id`. | Once at creation. Never changes. |
-| `source_hash` | Has the external source changed? | Raw source bytes (e.g., file on disk). Not our document — the external thing itself. `null` if source has never been read (discovery stub). | Each indexing check. Compared against stored value. |
-| `content_hash` | Has the document payload changed? | All mutable payload fields except `source_hash` and `content_hash`, via stable serialisation. | Each write. Covers `content`, type-specific fields, and any future mutable fields. |
-
-For **sourced objects**, identity_hash = `SHA-256(stableStringify({type, source}))` and serves as the `xt/id` (the hash derives the ID). For **unsourced objects**, identity_hash = `SHA-256(stableStringify({type, 'xt/id': assignedId}))` — the assigned ID is an input rather than an output. This ensures every object has a unique identity_hash regardless of sourcing.
-
-`content_hash` explicitly excludes `source_hash` and itself from its input. This avoids circular dependency: `source_hash` is a property of the external source, not of the document payload. When we add new mutable fields in the future, they are automatically included in `content_hash` because the stable serialisation covers all fields not explicitly excluded.
+No `locked`, `provenance`, or `nickname` fields.
 
 ### 2.3 Source bindings
 
-The `source` field is a tagged union. The `type` field determines which source-specific fields are required.
+The `source` field is a tagged union. The `type` field determines required sub-fields.
 
 **Filesystem source** (implemented):
 
@@ -100,186 +100,210 @@ The `source` field is a tagged union. The `type` field determines which source-s
 }
 ```
 
-- `filesystemId` — identifies the filesystem namespace (see §5.4).
-- `path` — **canonical** absolute path within that filesystem namespace. This is the path as seen from the filesystem itself, not necessarily the path the agent uses. For bind-mounted directories, this is the host-side path, not the container-side path. See §5.3 for path translation.
+- `filesystemId` — identifies the filesystem namespace (§5.4).
+- `path` — **canonical** absolute path. For bind mounts, the host-side path. See §5.3 for translation.
 
-**Future source types** (not yet implemented, shown for extensibility):
+**Future source types** (extensibility):
 
 ```json
-{ "type": "s3", "bucket": "my-bucket", "key": "data/file.csv" }
-{ "type": "git", "repo": "github.com/user/repo", "ref": "main", "path": "src/lib.ts" }
+{ "type": "s3", "bucket": "...", "key": "..." }
+{ "type": "git", "repo": "...", "ref": "...", "path": "..." }
 ```
 
-Each source type determines:
-- What fields are required in the source binding.
-- How the source hash is computed (file bytes for filesystem, etag for S3, blob hash for git).
-- What tracking infrastructure applies (file watcher, S3 poller, webhook listener).
+Each source type defines its required fields, how `file_hash` is computed (file bytes, etag, blob hash), and what tracker applies. Existing schemas are stable once defined.
 
-New source types extend the union. Existing source type schemas are stable once defined.
+### 2.4 Hashes
 
-### 2.4 Object identity
+Five hashes, each with a distinct purpose:
 
-**Sourced objects:** identity is derived from the source binding. The object ID is `SHA-256(stableStringify({type, source}))`. Two clients indexing the same source (same filesystem ID, same canonical path) produce the same identity hash and therefore resolve to the same object. This is how multi-agent access to the same file resolves to a single versioned object.
+```
+identity_hash (immutable — per object, never changes)
+│
+├── file_hash      (per version — external source)
+│
+└── object_hash    (per version — full document fingerprint)
+    ├── content_hash   (content field only)
+    └── metadata_hash  (type-specific fields only)
+```
 
-**Unsourced objects:** identity is assigned at creation. Tool calls use their call ID. Chat objects use `chat:{sessionId}`. Session objects use `session:{sessionId}`. System prompt objects use `system_prompt:{sessionId}`.
+| Hash | Purpose | Input | Null when |
+|------|---------|-------|-----------|
+| `identity_hash` | Is this the same object? | Sourced: `SHA-256({type, source})`. Unsourced: `SHA-256({type, 'xt/id': id})`. | Never. |
+| `file_hash` | Has the external file changed? | `SHA-256(raw file bytes as UTF-8)`. | Unsourced objects. Discovery stubs (never read). |
+| `content_hash` | Has the stored content changed? | `SHA-256(content)`. | Content is null (deleted, stub, non-text). |
+| `metadata_hash` | Have type-specific fields changed? | `SHA-256(stableStringify(typeSpecificFields))`. See §2.6 for which fields per type. | Never (always computable, even if fields are empty/default). |
+| `object_hash` | Has anything in this version changed? | `SHA-256(stableStringify({file_hash, content_hash, metadata_hash}))`. Composite — changes if any sub-hash changes. | Never. |
 
-**The identity rule:** if agent A changes it and agent B inherently sees the change (same file on the same filesystem, same S3 object, etc.), it is the same object. If they are on separate filesystems such that changes don't propagate, they are different objects with different IDs, even if the path string is identical.
+**Why `file_hash` and `content_hash` are separate:** For text files today they're identical (both SHA-256 of the file text). They diverge if we ever store transformed content (truncated, annotated, processed) rather than raw file bytes. `file_hash` always reflects the external source; `content_hash` always reflects what we store.
 
-### 2.5 Object types
+**What `metadata_hash` covers per type:** only the type-specific fields listed in §2.6, via stable serialisation. It does NOT include: `content`, `xt/id`, `type`, `source`, `identity_hash`, `file_hash`, `content_hash`, `metadata_hash`, `object_hash`. The exclusion list is explicit and fixed — immutable envelope fields plus hash fields plus the content field.
+
+### 2.5 Object identity
+
+**Sourced objects:** `xt/id` = `identity_hash` = `SHA-256(stableStringify({type, source}))`. Two clients indexing the same source get the same ID. This is how multi-agent access to the same file resolves to one object.
+
+**Unsourced objects:** `xt/id` is assigned at creation (tool call ID, `chat:{sessionId}`, etc.). `identity_hash` = `SHA-256(stableStringify({type, 'xt/id': assignedId}))` — verifies the ID/type pairing.
+
+**The identity rule:** if agent A changes it and agent B inherently sees the change (same file on same filesystem), it is the same object. If changes don't propagate (different filesystems), they are different objects even if the path string matches.
+
+### 2.6 Object types
 
 #### Content objects
 
-These participate in the context management system (session index, metadata pool, active set).
-
 **`file`** — sourced (filesystem). Represents a file on disk.
 
-| Mutable field | Description |
-|--------------|-------------|
-| `content` | File text content, or null if deleted/non-text/orphaned. |
-| `file_type` | File extension (e.g., `ts`, `md`). Derived from source path. |
-| `char_count` | Length of content string. 0 if content is null. |
+| Type-specific field | Description | Covered by `metadata_hash` |
+|---|---|---|
+| `file_type` | File extension (e.g., `ts`, `md`). Derived from source path. | Yes |
+| `char_count` | Length of content string. 0 if content is null. | Yes |
 
-The file's canonical path is in the immutable source binding (`source.path`), not in the mutable payload.
+Canonical path is in the immutable `source.path`, not in the payload.
 
-**`toolcall`** — unsourced. Result of a tool execution. Created once, never updated (single version).
+**`toolcall`** — unsourced. Result of a tool execution. Single version (created once, never updated).
 
-| Mutable field | Description |
-|--------------|-------------|
-| `content` | Tool output text. |
-| `tool` | Tool name (e.g., `bash`, `read`, `write`). |
-| `args` | Tool arguments (JSON object). |
-| `args_display` | Optional human-readable args summary. |
-| `status` | `ok` or `fail`. |
-| `chat_ref` | ID of the chat object this tool call belongs to. |
-| `file_refs` | Optional list of file object IDs referenced by this tool call. |
+| Type-specific field | Description | Covered by `metadata_hash` |
+|---|---|---|
+| `tool` | Tool name (e.g., `bash`, `read`). | Yes |
+| `args` | Tool arguments (JSON object). | Yes |
+| `args_display` | Optional human-readable args summary. | Yes |
+| `status` | `ok` \| `fail`. | Yes |
+| `chat_ref` | ID of the parent chat object. | Yes |
+| `file_refs` | Optional list of file object IDs referenced. | Yes |
 
 #### Infrastructure objects
 
-These are stored in XTDB for persistence and versioning but do NOT participate in the content management system. They are referenced by the session wrapper and rendered in fixed positions. The agent does not activate or deactivate them. They do not appear in the session index, metadata pool, or active set.
+Do NOT appear in session index, metadata pool, or active set. Referenced by session wrapper. Rendered in fixed positions.
 
 **`chat`** — unsourced. One per session. New version each turn.
 
-| Mutable field | Description |
-|--------------|-------------|
-| `content` | Rendered chat text (may be empty if turns are stored in the `turns` array). |
-| `turns` | Array of turn objects (user message, assistant response, tool call IDs, assistant metadata). |
-| `session_ref` | ID of the parent session object. |
-| `turn_count` | Number of turns. |
-| `toolcall_refs` | All tool call object IDs across all turns. |
+| Type-specific field | Description | Covered by `metadata_hash` |
+|---|---|---|
+| `turns` | Array of turn objects. | Yes |
+| `session_ref` | ID of parent session object. | Yes |
+| `turn_count` | Number of turns. | Yes |
+| `toolcall_refs` | All tool call IDs across all turns. | Yes |
 
-**`system_prompt`** — unsourced. One per session. Updated if the prompt changes.
+**`system_prompt`** — unsourced. One per session. Updated if prompt changes.
 
-| Mutable field | Description |
-|--------------|-------------|
-| `content` | The system prompt text. |
+No type-specific fields beyond `content`.
 
-**`session`** — unsourced. Session wrapper object. See §3 for full structure. Updated whenever session state changes.
+**`session`** — unsourced. Session wrapper. See §3.
+
+| Type-specific field | Description | Covered by `metadata_hash` |
+|---|---|---|
+| `session_id` | Stable identifier. | Yes |
+| `chat_ref` | Chat object ID. | Yes |
+| `system_prompt_ref` | System prompt object ID. | Yes |
+| `session_index` | Append-only content object ID set. | Yes |
+| `metadata_pool` | Mutable content object ID set. | Yes |
+| `active_set` | Mutable content object ID set. | Yes |
+| `pinned_set` | Mutable content object ID set. | Yes |
 
 ---
 
 ## 3) Sessions
 
-A **session** is one agent's complete interaction state. It is the portable unit — everything needed to pause, move, and resume an agent's work.
+### 3.1 Structure
 
-### 3.1 Session structure
-
-The session wrapper object contains:
+The session wrapper (a `session` infrastructure object in XTDB) contains:
 
 | Field | Mutability | Description |
 |-------|-----------|-------------|
-| Session ID | Immutable | Stable identifier for this session. |
-| Chat reference | Immutable | ID of this session's chat object. |
-| System prompt reference | Immutable | ID of this session's system prompt object. |
-| **Session index** | Append-only | Set of every **content object** ID this session has encountered. Never shrinks. If an object is deleted or orphaned, it stays in the index — the object's latest version reflects the loss, but the index entry remains. |
-| **Metadata pool** | Mutable | Subset of the session index. Content object IDs currently loaded as compact metadata in the agent's context window. |
-| **Active set** | Mutable | Subset of the metadata pool. Content object IDs whose full content is loaded in context. |
-| **Pinned set** | Mutable | Content object IDs the agent has explicitly pinned (exempt from auto-collapse). |
+| `session_id` | Immutable | Stable identifier. |
+| `chat_ref` | Immutable | ID of this session's chat object. |
+| `system_prompt_ref` | Immutable | ID of this session's system prompt object. |
+| `session_index` | Append-only | Every content object ID this session has encountered. Never shrinks. |
+| `metadata_pool` | Mutable | Subset of session index. Content objects visible as metadata. |
+| `active_set` | Mutable | Subset of metadata pool. Content objects with full content loaded. |
+| `pinned_set` | Mutable | Content objects exempt from auto-collapse. |
 
-The session document stores only object IDs in these sets, not duplicated metadata. The client caches object metadata in memory and looks it up from the database on resume.
-
-Infrastructure objects (chat, system_prompt) are not in these sets. They are referenced by `chat_ref` and `system_prompt_ref` and rendered in fixed positions (§4.1).
+Stores object IDs only, not duplicated metadata. Client caches metadata in memory.
 
 ### 3.2 Context levels
 
-From the agent's perspective, a content object can be in one of three states:
+A content object is in one of three states:
 
-1. **Active** — full content loaded in context. Costs tokens. Object is in the active set (and therefore also in the metadata pool and session index).
-2. **Inactive (metadata)** — compact metadata summary visible. Agent can browse and choose to activate. Object is in the metadata pool (and session index) but not the active set.
-3. **Indexed only** — in the session index but not in the metadata pool. The agent doesn't see it in context, but the session remembers it. Can be promoted to the metadata pool.
+1. **Active** — full content in context. In active set ⊂ metadata pool ⊂ session index.
+2. **Metadata** — compact summary visible. In metadata pool ⊂ session index, not in active set.
+3. **Indexed only** — in session index only. Not visible to agent. Reserved for future use — currently, no operation demotes from metadata pool. All objects that enter the metadata pool stay there. When metadata pool growth becomes a concern (very long sessions), a demote operation will be added.
 
-Infrastructure objects do not have context levels. They are always rendered in their fixed positions (§4.1).
+Infrastructure objects have no context level. Always rendered in fixed positions.
 
-### 3.3 Activation and deactivation
+### 3.3 Agent-facing interface
 
-- `activate(id)` — load content object's content into the active set. Object must be in the metadata pool. If it's only in the session index, promote to metadata pool first, then activate. If the object is a sourced file with null content (discovery stub — path known but never read), the client reads the source and runs the full indexing protocol (§5.6) before loading content. If the source is inaccessible, activation fails gracefully (object stays in metadata pool with null content).
-- `deactivate(id)` — remove from active set. Object remains in the metadata pool.
-- Only content objects (file, toolcall) can be activated/deactivated.
-- Recent tool call outputs are auto-activated; older outputs auto-collapse based on a sliding window policy (see §4.3). File objects are not auto-collapsed — the agent explicitly manages them.
+The agent sees these tools (provided by the client, wrapping the context management system):
+
+| Tool | Effect |
+|------|--------|
+| `activate(id)` | Load content into active set. Must be in metadata pool (auto-promotes from indexed-only if needed). For discovery stubs (file_hash null, content null): client reads source and runs full indexing first. Fails gracefully if source inaccessible. |
+| `deactivate(id)` | Remove from active set. Stays in metadata pool. |
+| `pin(id)` | Mark as pinned (exempt from auto-collapse). |
+| `unpin(id)` | Remove pin. |
+| Standard tools | `read`, `write`, `edit`, `ls`, `grep`, etc. — the client wraps these and handles indexing transparently. |
+
+Only content objects can be activated/deactivated/pinned.
 
 ### 3.4 What the agent controls
 
-- Metadata pool membership (which content objects appear as metadata in context).
-- Active set membership (which content objects have full content loaded).
-- Pinned set membership.
-- Triggering new content object creation (by reading files, running tools).
+- Metadata pool membership, active set membership, pinned set membership.
+- Triggering new content object creation (reading files, running tools).
 
 ### 3.5 What the agent does not control
 
-- Session index (append-only — agent cannot remove entries).
-- Object version history (cannot rewrite or delete versions).
-- Object identity and immutable envelope (set at creation).
-- Infrastructure objects (chat, system prompt, session state — managed by the client).
+- Session index (append-only).
+- Object version history and identity.
+- Infrastructure objects.
 - Other sessions' state.
 
 ### 3.6 Session lifecycle
 
-**Active** — agent is running. Session state is updated each turn.
+**Active** — agent running. Session state updated each turn.
 
-**Paused** — agent is not running. Session state is persisted in the database. All references remain valid.
+**Paused** — session persisted in database. All references remain valid.
 
-**Resumed** — session is loaded from database:
+**Resumed:**
 
-1. Fetch session wrapper from XTDB. Restore session index, metadata pool, active set, pinned set.
-2. Fetch all content objects referenced in the session index (batch query).
-3. For each sourced object (`source != null`): check if the client can access the source.
-   - **Source accessible:** read source, compute source hash, run indexing protocol. If source changed since last version, write new version.
-   - **Source unreachable** (file missing, sandbox gone, machine offline): object is orphaned. Latest version remains as-is.
-   - **Source confirmed deleted** (explicit deletion check): write new version with null content.
-4. For unsourced content objects (tool calls): no reconciliation needed.
-5. Rebuild in-memory metadata cache (for rendering) and active content cache.
-6. Re-establish trackers (watchers) for accessible sourced objects.
+1. Fetch session wrapper. Restore all sets.
+2. Fetch all content objects in session index (batch Datalog query).
+3. For each sourced object: attempt source access.
+   - **Accessible:** read source, compute file_hash, run indexing protocol. New version if changed.
+   - **Unreachable:** orphaned. Latest version stays.
+   - **Confirmed deleted:** new version with null content.
+4. Unsourced content objects: no reconciliation.
+5. Rebuild metadata cache and active content cache.
+6. Re-establish watchers for accessible sourced objects.
 
 ### 3.7 Multi-session databases
 
-Multiple sessions can exist in the same database. Sessions are isolated by design: each has its own index, metadata pool, active set, chat, and system prompt.
+Multiple sessions in one database. Sessions isolated by design (own index, pools, chat, system prompt). Content objects shared — same file = same object across sessions.
 
-Content objects are shared across sessions. Two sessions activating the same file reference the same object and see the same version history. This is correct: the object represents the external thing, not any session's view of it.
-
-Concurrent access from multiple clients is supported. The database handles concurrent HTTP requests. If two clients push an update to the same object simultaneously, both writes succeed as separate versions. In the common case both writes contain the same content (they both observed the same file change), so the duplicate version is harmless — identical content, slightly redundant history.
+Concurrent writes by multiple clients: both succeed as separate versions. Harmless if content is identical.
 
 ---
 
 ## 4) Context Assembly
 
-### 4.1 Context rendering
+### 4.1 Rendering order
 
-Each turn, the client assembles the LLM-visible context from the session state. The four sections are rendered in this order:
+Each turn, the client assembles four sections:
 
-**1. System prompt.** Rendered from the system prompt infrastructure object. Always present. Fixed position.
+**1. System prompt.** From infrastructure object. Always present.
 
-**2. Metadata pool summary.** One line per content object in the metadata pool. Format per type:
+**2. Metadata pool summary.** One line per content object:
 
 | Type | Format |
 |------|--------|
-| `file` | `id={id} type=file path={displayPath} file_type={file_type} char_count={char_count}` |
+| `file` (indexed) | `id={id} type=file path={displayPath} file_type={file_type} char_count={char_count}` |
+| `file` (stub) | `id={id} type=file path={displayPath} file_type={file_type} [unread]` |
 | `toolcall` | `id={id} type=toolcall tool={tool} status={status}` |
 
-`displayPath` is the **agent-visible path** — the path as the agent sees it (e.g., `/workspace/src/main.ts`), not the canonical host-side path stored in the source binding. The client reverse-translates canonical paths to agent-visible paths using mount mappings (§5.3). For non-sandboxed agents, canonical path = agent-visible path. For container-internal files (no mount mapping), the path is already agent-visible.
+File stubs (file_hash is null) show `[unread]` instead of `char_count`. This distinguishes "not yet read" from "empty file."
 
-**3. Chat history.** Rendered from the chat infrastructure object. User messages, assistant messages, and tool call metadata references. Tool call outputs are replaced with compact references: `toolcall_ref id={id} tool={tool} status={status}`. Full tool output is only visible if the tool call is in the active set (rendered in section 4).
+`displayPath` is the **agent-visible path** (reverse-translated from canonical via mount mappings, §5.3). For non-sandboxed agents, canonical = agent-visible.
 
-**4. Active content.** One block per content object in the active set:
+**3. Chat history.** From infrastructure object. Tool call outputs replaced with `toolcall_ref id={id} tool={tool} status={status}`. Full output only if the tool call is active.
 
+**4. Active content.** One block per active content object:
 ```
 ACTIVE_CONTENT id={id}
 {content}
@@ -287,167 +311,138 @@ ACTIVE_CONTENT id={id}
 
 ### 4.2 Ordering rationale
 
-The four sections are ordered for cache efficiency: system prompt and metadata pool are stable across turns (top). Chat history is append-only (middle). Active content is volatile (bottom). LLM providers cache token prefixes, so stable content at the top reduces re-processing.
+Stable content at the top (system prompt, metadata pool). Append-only in the middle (chat). Volatile at the bottom (active content). LLM providers cache token prefixes — stable tops reduce re-processing.
 
-### 4.3 Auto-collapse policy
+### 4.3 Auto-collapse
 
-Recent tool call outputs are auto-activated. Older ones are auto-deactivated based on a sliding window: configurable per-turn limit (default: 5 most recent per turn) and turns-back window (default: 3 turns). Pinned objects are exempt from auto-collapse.
+Tool call outputs: auto-activated on creation, auto-deactivated by sliding window (default: 5 per turn, 3 turns back). Pinned objects exempt.
 
-File objects are not auto-collapsed. The agent explicitly activates and deactivates them.
+File objects: never auto-collapsed. Agent manages explicitly.
 
 ---
 
 ## 5) Clients, Sources, and Tracking
 
-### 5.1 Clients
+### 5.1 Client
 
-A **client** is a process that connects to the database, performs indexing, runs trackers, and assembles context. In practice, the client is the context manager layer itself — instantiated by the agent's harness, running alongside the agent loop.
+The **client** is the context manager process — instantiated by the harness, running alongside the agent loop.
 
-**Where the client runs:** The client typically runs outside the agent's sandbox. In a Pi coding agent deployment: the harness runs on the host; the agent's tools execute inside a Docker container; tool outputs flow back to the harness; the client (part of the harness) intercepts these outputs and performs indexing against the database.
+**Runs:** typically outside the agent's sandbox (on the host). Has network access to XTDB, knowledge of the filesystem topology, ability to read files the agent references.
 
-The client has:
-- Network access to the XTDB database (HTTP).
-- Knowledge of the execution environment: what filesystems the agent can access, how sandbox paths map to host paths, which mounts exist.
-- The ability to read files the agent references — either directly (same filesystem) or via mounted volumes.
+**Responsibilities:**
+- Wrap agent tool calls → index files, create tool call objects.
+- Create and maintain infrastructure objects (chat, system prompt, session).
+- Run watchers for accessible sourced objects.
+- Manage session state (index, pools, sets).
+- Assemble context each turn.
+- Maintain metadata cache (display paths, file types, char counts, tool names).
 
-**What the client does:**
-- Wraps or intercepts agent tool calls (read, write, ls, grep, etc.).
-- Indexes sourced content objects (files) via the indexing protocol (§5.6).
-- Creates unsourced content objects (tool calls) directly (§5.7).
-- Creates and maintains infrastructure objects (chat, system prompt, session).
-- Runs file watchers for tracked sourced objects it can access.
-- Manages the session state (session index, metadata pool, active set, pinned set).
-- Assembles context each turn (§4).
-- Maintains a metadata cache for rendering (agent-visible paths, file types, char counts, tool names, statuses).
+**Agent sees:** activate, deactivate, pin, unpin tools plus standard file/tool operations. Database is invisible.
 
-**What the agent sees:** The agent does not interact with the database directly. It sees tools provided by the client: activate, deactivate, pin, unpin, and the standard file/tool operations that the client wraps. The database is invisible to the agent.
+### 5.2 Filesystem awareness
 
-### 5.2 Client filesystem awareness
+| Scenario | Filesystem IDs | Path translation |
+|----------|---------------|-----------------|
+| No sandbox | One (host) | None |
+| Sandbox with bind mounts | Host + container overlay | Agent prefix → canonical prefix |
+| Multiple mounts | One per distinct mount + default | Per-mount prefix rules |
 
-A client may need to handle multiple filesystem namespaces simultaneously. Common scenarios:
+### 5.3 Path translation
 
-1. **No sandbox.** Client and agent on the same machine, same filesystem. One filesystem ID. All paths are canonical as-is. No translation needed.
-2. **Sandbox with bind mounts.** Agent in Docker. Some container paths are bind-mounted from the host. The container overlay filesystem is separate. The client needs at least two filesystem IDs and translates agent paths for bind-mounted directories.
-3. **Multiple mounts.** A sandbox with several volumes from different sources. Each distinct mount gets its own filesystem ID and path translation rule.
-
-### 5.3 Path translation and mount mappings
-
-When the agent operates inside a sandbox, the paths it sees (e.g., `/workspace/main.ts`) may differ from the canonical paths on the host filesystem (e.g., `/home/abaris/project/main.ts`). For bind-mounted directories, these are the same underlying file, and the source binding must use the canonical path so that host agents and sandboxed agents resolve to the same object.
-
-**Mount mappings** translate between agent-visible paths and canonical paths:
+**Mount mappings** translate agent-visible ↔ canonical paths:
 
 ```
-Mount mapping:
-  agentPrefix:    /workspace
-  canonicalPrefix: /home/abaris/project
-  filesystemId:    <host filesystem ID>
+agentPrefix:     /workspace
+canonicalPrefix: /home/abaris/project
+filesystemId:    <host filesystem ID>
 ```
 
-**Forward translation** (agent path → source binding): when the client processes a path from the agent, it does longest-prefix match against mount mappings. If a match: replace `agentPrefix` with `canonicalPrefix`, use mapping's filesystem ID. If no match: path is used as-is, default filesystem ID applies.
+**Forward** (agent → canonical): longest-prefix match. Match → replace prefix, use mapping's FS ID. No match → path as-is, default FS ID.
 
-**Reverse translation** (source binding → display path): for rendering metadata summaries (§4.1), the client reverses the mapping: replace `canonicalPrefix` with `agentPrefix`. If no mapping matches the canonical path (e.g., object was created by a different client, or mount configuration changed), fall back to displaying the canonical path.
+**Reverse** (canonical → display): replace canonical prefix with agent prefix. No match → show canonical path as fallback.
 
-**Example:** Agent reads `/workspace/src/main.ts`. Mount mapping matches `/workspace` → `/home/abaris/project`. Source binding: `{type: "filesystem", filesystemId: hostFsId, path: "/home/abaris/project/src/main.ts"}`. A host agent reading `/home/abaris/project/src/main.ts` produces the same source binding → same object. In the sandboxed agent's metadata summary, the file is displayed as `/workspace/src/main.ts` (reverse-translated). In the host agent's metadata summary, it's displayed as `/home/abaris/project/src/main.ts` (no translation needed).
+**Source:** harness configures at startup from Docker/sandbox config.
 
-**Where mount mappings come from:** The harness configures the client at startup with mount mappings derived from the Docker/sandbox configuration. The harness already knows the mount topology (it set up the container). This is explicit configuration, not auto-detected.
-
-**Runtime device-ID detection (optional fallback):** If the client has direct filesystem access, it can use `stat().dev` to detect filesystem boundaries for paths not covered by mount mappings. The client caches device ID → filesystem ID. First encounter of a new device ID generates a new filesystem ID. The `stat` call is already happening for the file watcher, so this adds zero extra I/O. Mount mappings take precedence over device-ID detection.
+**Fallback:** optional `stat().dev` device-ID detection for unconfigured mounts. Zero extra I/O (stat already happening). Mount mappings take precedence.
 
 ### 5.4 Filesystem identity
 
-A **filesystem ID** identifies a distinct filesystem namespace. Two paths on the same filesystem ID refer to the same underlying files. Two paths on different filesystem IDs are independent even if the path strings match.
-
-Generation: the client computes filesystem IDs programmatically. For the host machine: SHA-256 of `/etc/machine-id` (or platform equivalent). For a Docker container's overlay filesystem: SHA-256 of the container ID or the container's own `/etc/machine-id`. For bind-mounted volumes: the host's filesystem ID (edits propagate both ways — same filesystem).
-
-The database trusts declared filesystem IDs. Clients are assumed trusted. Misconfigured filesystem IDs cause object collisions or spurious separation. This is a configuration error, not something the database guards against.
+SHA-256 of `/etc/machine-id` (or platform equivalent) for host. Container has its own. Bind mounts use host's FS ID (same files). Database trusts declared IDs.
 
 ### 5.5 Sources
 
-A **source** is the external thing a sourced object is bound to. Defined by the source binding in the object's immutable envelope (§2.3).
+A **source** is the external thing a sourced object tracks. Defined by the immutable source binding. Two objects with the same source binding are the same object.
 
-The source determines identity. Two objects with the same source binding are the same object. The source binding is immutable — once an object is created with a source, that binding never changes.
+### 5.6 Indexing protocol
 
-### 5.6 Indexing protocol (sourced content objects)
+Two entry points. Both produce the same object identity.
 
-There are two entry points for file indexing: **full indexing** (content is available) and **discovery** (only the path is known). Both produce the same object identity; discovery creates a minimal stub that full indexing later upgrades.
+#### Full indexing
 
-#### Full indexing (content available)
+**Triggered by:** agent reads a file, watcher fires, session resume.
 
-Triggered by: agent reads a file, watcher fires, session resume reconciliation.
+**Steps:**
 
-1. **Translate path.** Apply mount mappings (§5.3) to get the canonical path and filesystem ID.
-2. **Compute source binding.** `{type: "filesystem", filesystemId: X, path: Y}` where Y is the canonical path.
-3. **Read content and compute source hash.** The content comes from either:
-   - The tool output (the tool already read the file — no need to re-read), or
-   - A direct file read by the client (for watcher events or session resume).
-   In both cases, hash the content as a UTF-8 string: `SHA-256(content)`.
-4. **Derive object ID.** `identityHash("file", source)` — SHA-256 of the immutable envelope.
-5. **Check database.** Fetch the current version of the object by ID.
-   - **Not found:** create object with full envelope and payload. First version. Return `created`.
-   - **Found, stored `source_hash` is null** (discovery stub): write new version with content, source hash, content hash, type-specific fields. Return `updated`.
-   - **Found, source hash matches stored `source_hash`:** no-op. Return `unchanged`.
-   - **Found, source hash differs from stored `source_hash`:** write new version with updated payload. Return `updated`.
-6. **Update session.** Add object ID to session index (if not already present). Add to metadata pool and active set.
-
-The common case (file hasn't changed) requires one hash computation and one database lookup. No write.
-
-#### Discovery (path only, content not read)
-
-Triggered by: side-effect extraction from tool output (ls, grep, find, tree, etc.). The client observes a file path but does not have the file content.
-
-1. **Translate path** and **compute source binding** — same as full indexing steps 1–2.
-2. **Derive object ID** — same as full indexing step 4.
+1. **Resolve identity.** Translate path (§5.3) → source binding → `identityHash("file", source)` → object ID.
+   - *For watcher events:* the client already knows the source binding and object ID (it set up the watcher). Skip to step 2.
+2. **Get content and file_hash.** Content from tool output (agent read) or direct file read (watcher, resume). `file_hash = SHA-256(content as UTF-8)`.
 3. **Check database.** Fetch current version by ID.
-   - **Not found:** create a **discovery stub** — full immutable envelope, but payload has `content: null`, `source_hash: null`, `char_count: 0`, `file_type` derived from path extension. Return `created`.
-   - **Found** (stub or full object already exists): no-op. Return `unchanged`. Discovery never overwrites existing content.
-4. **Update session.** Add object ID to session index. Add to metadata pool only (not active set — the agent hasn't read the content).
+   - **Not found:** create with full envelope + payload. Return `created`.
+   - **Found, stored `file_hash` is null** (discovery stub): update with content + hashes. Return `updated`.
+   - **Found, `file_hash` matches:** no-op. Return `unchanged`.
+   - **Found, `file_hash` differs:** write new version. Return `updated`.
+4. **Update session** (depends on trigger):
+   - **Agent read:** add to session index, metadata pool, and active set.
+   - **Watcher event:** object already in session sets. Update metadata cache only (char_count, content_hash may have changed). Do NOT change set membership — don't force-activate something the agent deactivated.
+   - **Session resume:** sets already restored from persisted session. No set changes. Metadata cache updated from fresh data.
+
+#### Discovery
+
+**Triggered by:** side-effect path extraction from tool output (ls, grep, find, tree).
+
+1. **Resolve identity.** Same as full indexing step 1.
+2. **Check database.**
+   - **Not found:** create discovery stub — full envelope, payload: `content: null`, `file_hash: null`, `content_hash: null`, `char_count: 0`, `file_type` from extension. Return `created`.
+   - **Found:** no-op. Discovery never overwrites. Return `unchanged`.
+3. **Update session.** Add to session index and metadata pool (not active set).
 
 ### 5.7 Unsourced object creation
 
-Unsourced objects are created directly — not via the indexing protocol.
+**Tool calls:** created on tool execution. ID from harness. Written once. Added to session index + metadata pool + active set.
 
-**Content objects:**
-- **Tool calls:** created when the agent executes a tool. ID is the tool call ID from the harness. Written once to XTDB, never updated (single version). Added to session index, metadata pool, and active set upon creation.
-
-**Infrastructure objects:**
-- **Chat:** created when the session starts. ID is `chat:{sessionId}`. Updated (new version) each turn as turns are appended.
-- **System prompt:** created when the session starts. ID is `system_prompt:{sessionId}`. Updated if the system prompt changes.
-- **Session:** created when the session starts. ID is `session:{sessionId}`. Updated whenever session state changes (active set, metadata pool, etc.).
+**Infrastructure:** chat, system_prompt, session created at session start. Updated as described in §2.6.
 
 ### 5.8 Trackers
 
-A **tracker** is a process that watches a source and pushes updates to the database when the source changes. For filesystem sources, this is a file watcher (chokidar in the current implementation).
+File watchers run by the client. Watch canonical (host-side) paths for bind-mounted files. No watcher for container-internal files (indexed via tool calls only — ephemeral, not externally modified).
 
-Trackers are run by clients. Each client runs trackers for the sources it has access to. Multiple clients can track the same source — all updates resolve to the same object because identity is source-derived.
-
-**Watcher scope:** The client can only watch files it can directly access. For bind-mounted files, the client watches the canonical (host-side) path, since the client runs on the host. For container-internal files (default filesystem ID, no mount mapping), the client does not set up a persistent watcher — these files are only indexed when the agent accesses them via tool calls. This is acceptable: container-internal files are ephemeral and not externally modified.
+Multiple clients can watch the same source. All resolve to the same object.
 
 ### 5.9 Tracker lifecycle
 
-- **Attached** — actively watching. Pushes updates on change via the indexing protocol.
-- **Orphaned** — no tracker is active. The object's latest version reflects the last known state. Common causes: sandbox destroyed, machine offline, file deleted, client shut down. Orphaning is normal and expected, not an error.
-- **Resumed** — a tracker (same or different client) re-attaches to an orphaned object. Runs the indexing protocol to check current source state and create a new version if the source has changed.
+**Attached** → actively watching, pushes updates via indexing protocol.
 
-When a source is confirmed deleted (watcher receives unlink event, or explicit check on resume confirms absence), the client writes a new version with null content. The object and its full history remain in the database.
+**Orphaned** → no active tracker. Latest version stays. Normal state (sandbox gone, machine offline, etc.).
+
+**Resumed** → tracker re-attaches. Runs indexing protocol. New version if source changed.
+
+**Deleted** → watcher receives unlink. Client writes version with null content. Object and history remain.
 
 ---
 
 ## 6) Evaluation and Experiments
 
-### 6.1 Prompt and behaviour policy
+### 6.1 Policy
 
-Fixed prompt/protocol is required for fair evaluation phases. Harness raw message logs are treated as event input; assembled context is what the model actually sees.
+Fixed prompt/protocol for fair evaluation. Assembled context is what the model sees.
 
-### 6.2 Experiment infrastructure
+### 6.2 Infrastructure
 
-Experiment scripts are in `scripts/`. Some use a real LLM agent loop (GPT-4.1), some are scripted API exercises. Reports in `docs/experiments/` — see its README for the distinction.
+Scripts in `scripts/`. Reports in `docs/experiments/`.
 
-### 6.3 Experiment database isolation
+### 6.3 Database isolation
 
-Each experiment should use a clean, isolated database. Options:
-- Separate XTDB process with its own data directory per experiment.
-- In-memory XTDB backend (`xtdb.mem/->kv-store`) for ephemeral experiment runs.
-- Same XTDB instance with unique session IDs per experiment (weaker isolation — sourced objects from different experiments share identity if they reference the same files — but no extra processes needed).
+Options: separate XTDB process per experiment, in-memory backend (`xtdb.mem/->kv-store`), or same instance with unique session IDs (weaker — sourced objects shared if same files).
 
 ---
 
@@ -455,49 +450,36 @@ Each experiment should use a clean, isolated database. Options:
 
 > Last updated: 2026-02-24.
 
-This section tracks what exists in the repo, not what the design intends. For design intent, see sections 1–6.
+Tracks what exists, not design intent (§1–6).
 
 ### 7.1 Modules
 
-| Module | Path | Status | Notes |
-|--------|------|--------|-------|
-| XTDB client | `src/xtdb-client.ts` | Working | HTTP client for XTDB v1 standalone. Three endpoints: `submit-tx`, `entity`, `query`. |
-| Core types | `src/types.ts` | **Needs update** | Current types predate the object model in §2. Has `locked`, `provenance`, `nickname` fields to remove. Missing: source bindings, identity hash, source hash, session index. Content/infrastructure distinction not present. |
-| Hashing | `src/hashing.ts` | **Needs update** | Has `contentHash`, `metadataViewHash`, `objectHash` — these mix concerns. Needs three clean hashes per §2.2. |
-| Context manager | `src/context-manager.ts` | Working | In-memory pools and cursor processing. Toolcall-only — no file object management. |
-| Extension | `src/phase3-extension.ts` | **Needs update** | File indexing, watcher, session persist/resume. File IDs are `file:{path}` — needs source-derived identity. No filesystem ID, no path translation, no session index separate from metadata pool. Stores full metadata entries in session document (should be ID-only). Chat/system_prompt treated as content objects with locking — should be infrastructure. |
-| Exports | `src/index.ts` | Working | Re-exports public API. |
+| Module | Path | Status |
+|--------|------|--------|
+| XTDB client | `src/xtdb-client.ts` | Working |
+| Core types | `src/types.ts` | **Needs update** — missing source bindings, new hashes, content/infrastructure split |
+| Hashing | `src/hashing.ts` | **Needs update** — has 3 mixed-concern hashes, needs 5 clean hashes per §2.4 |
+| Context manager | `src/context-manager.ts` | Working — toolcall-only |
+| Extension | `src/phase3-extension.ts` | **Needs update** — file IDs, FS resolver, session index, ID-only pools, infrastructure split |
+| Exports | `src/index.ts` | Working |
 
-### 7.2 Test coverage
+### 7.2 Tests
 
-25 tests across 5 suites, all against real XTDB (no mocks for acceptance):
-- `tests/phase1.test.ts` — XTDB client basics (put/get/as-of/history/query)
-- `tests/phase2.test.ts` — Context manager pools and cursor
-- `tests/phase3.test.ts` — Extension tools, side-effect indexing, activation/lock
-- `tests/phase4.test.ts` — Watcher, session resume, cursor invalidation
-- `tests/e2e-final.test.ts` — Full lifecycle continuity
+25 tests across 5 suites against real XTDB. All need updating for new types/hashes.
 
-### 7.3 What is not yet implemented
+### 7.3 Not yet implemented
 
-- Object model: types, hashing, and document structure per §2.
-- Content/infrastructure object distinction per §2.1.
-- Source bindings, filesystem identity, and path translation per §5.
-- Client filesystem awareness (multi-filesystem, mount mappings) per §5.2–5.3.
+- Object model, hashes, document structure per §2.
+- Content/infrastructure split per §2.1.
+- Source bindings, filesystem identity, path translation per §5.
 - Session index (append-only, separate from metadata pool) per §3.1.
-- Indexing protocol and database handler per §5.6.
-- Agent-visible path reverse-translation for metadata rendering per §4.1.
-- Not integrated into a live Pi coding agent session.
-- Evaluation plan (`docs/eval-plan.md`) documented but unstarted.
-- All LLM experiments used investigation/research scenarios; not yet tested on coding tasks.
-- Some design decisions remain policy-level only (token budget enforcement).
+- Indexing protocol with discovery stubs per §5.6.
+- Metadata rendering with stub indicator and display paths per §4.1.
+- Token budget enforcement (future).
 
-### 7.4 XTDB deployment
+### 7.4 XTDB
 
-Current: XTDB v1.24.3 standalone with RocksDB backend. Single process on host VPS. 91MB jar. Config: `xtdb/xtdb.edn`. Data in three RocksDB directories under `data/` (docs, idx, txs — ~477MB, mostly test/experiment data).
-
-Data is portable across same-architecture machines: copy the three directories, point XTDB at them, start.
-
-For in-memory (experiment/sandbox use): swap RocksDB for `xtdb.mem/->kv-store` in the EDN config. No persistence, no native dependencies. Suitable for ephemeral runs.
+v1.24.3 standalone, RocksDB. Single process. 91MB jar. ~477MB data. Config: `xtdb/xtdb.edn`. Portable across same-architecture machines. In-memory option for ephemeral use.
 
 ---
 
@@ -505,42 +487,36 @@ For in-memory (experiment/sandbox use): swap RocksDB for `xtdb.mem/->kv-store` i
 
 | Term | Definition |
 |------|-----------|
-| **Object** | Versioned entity in the database with stable identity and version history. |
-| **Content object** | Object that participates in the context management system (`file`, `toolcall`). Can be activated, deactivated, appears in session index/metadata pool/active set. |
-| **Infrastructure object** | Object stored for persistence/versioning but outside the content management system (`chat`, `system_prompt`, `session`). Rendered in fixed positions. |
-| **Sourced object** | Object bound to an external source (file, S3, etc.). Source binding is immutable. Created via the indexing protocol. |
-| **Unsourced object** | Object that exists only in the database (tool call, chat, session). Created directly by the client. |
-| **Source** | The external thing a sourced object tracks. Defined by type + type-specific locator fields. |
-| **Source binding** | The immutable `source` field on a sourced object's envelope. Determines identity. |
-| **Client** | The context manager process. Connects to the database, performs indexing, runs trackers, assembles context. Typically runs outside the agent's sandbox. |
-| **Tracker** | A process (run by a client) watching an external source and pushing updates to the database. |
-| **Orphaned** | A sourced object whose tracker is no longer active. Normal state, not an error. |
-| **Canonical path** | The absolute path within a filesystem namespace, as seen from the filesystem itself. For bind mounts, the host-side path. Stored in the source binding. |
-| **Agent-visible path** | The path as the agent sees it (e.g., inside a container). May differ from canonical path for bind mounts. Used in metadata rendering. |
-| **Display path** | Synonym for agent-visible path in context of metadata rendering. |
-| **Mount mapping** | Configuration that translates between agent-visible paths and canonical paths, and assigns filesystem IDs. |
-| **Session** | One agent's complete interaction state: session index, metadata pool, active set, pinned set, plus references to chat and system prompt infrastructure objects. The portable unit. |
-| **Session index** | Append-only set of all content object IDs a session has encountered. |
-| **Metadata pool** | Mutable subset of the session index. Content objects visible as compact metadata in context. |
-| **Active set** | Mutable subset of the metadata pool. Content objects with full content loaded in context. |
-| **Pinned set** | Content objects the agent has marked to exempt from auto-collapse. |
-| **Activate / Deactivate** | Promote / demote content object between active and metadata-only states. |
-| **Identity hash** | SHA-256 of an object's immutable envelope (type + source). Defines object ID for sourced objects. |
-| **Source hash** | SHA-256 of the raw external source (e.g., file content as UTF-8). Used for efficient change detection during indexing. |
-| **Content hash** | SHA-256 of all mutable payload fields (excluding source_hash and itself). Detects document-level changes. |
-| **Filesystem ID** | Identifier for a distinct filesystem namespace. Programmatically generated by the client. |
-| **Harness** | External agent runtime (loop, tools, UI) that the context manager integrates with. |
+| **Object** | Versioned entity in the database. |
+| **Content object** | `file`, `toolcall`. Participates in context management (activate/deactivate/pin). |
+| **Infrastructure object** | `chat`, `system_prompt`, `session`. Persistence/versioning only. Fixed rendering positions. |
+| **Sourced** | Bound to external source. Identity from source binding. |
+| **Unsourced** | Database-only. Assigned identity. |
+| **Source binding** | Immutable `source` field. Tagged union by source type. |
+| **Client** | Context manager process. Indexes, tracks, assembles context. |
+| **Tracker** | Watcher process pushing source changes to database. |
+| **Orphaned** | Sourced object with no active tracker. Normal state. |
+| **Discovery stub** | File object created from path discovery (ls, grep). content/file_hash null. Upgraded on first read. |
+| **Canonical path** | Host-side absolute path. Stored in source binding. |
+| **Agent-visible path** | Path as agent sees it (container-side). Used in metadata rendering. |
+| **Mount mapping** | Agent prefix ↔ canonical prefix + filesystem ID. |
+| **Session** | Agent's complete interaction state. The portable unit. |
+| **Session index** | Append-only set of content object IDs encountered. |
+| **Metadata pool** | Mutable subset of session index. Compact summaries in context. |
+| **Active set** | Mutable subset of metadata pool. Full content in context. |
+| **Pinned set** | Exempt from auto-collapse. |
+| **identity_hash** | Sourced: SHA-256(type + source) = xt/id. Unsourced: SHA-256(type + xt/id). |
+| **file_hash** | SHA-256 of raw file bytes. External source check. |
+| **content_hash** | SHA-256 of stored content field. |
+| **metadata_hash** | SHA-256 of type-specific fields (excludes content and hashes). |
+| **object_hash** | SHA-256(file_hash + content_hash + metadata_hash). Full version fingerprint. |
+| **Harness** | External agent runtime (loop, tools, UI). |
 
 ---
 
 ## 9) Change Policy
 
-Update this SSOT whenever behaviour, assumptions, or architecture materially changes.
-
-1. **Behaviour first**: implement or decide the change.
-2. **Same commit window**: update this SSOT in the same change set.
-3. **Mark impact** as: `Design change`, `Implementation alignment`, or `Implementation divergence`.
-4. **Keep §7 honest**: never describe unshipped behaviour as shipped.
-5. **Cross-link**: if detailed docs change elsewhere, adjust references here.
-
-Default to documenting uncertainty explicitly rather than over-claiming.
+1. Behaviour first, then update SSOT in same commit.
+2. Mark: `Design change`, `Implementation alignment`, or `Implementation divergence`.
+3. Keep §7 honest — never describe unshipped as shipped.
+4. Document uncertainty explicitly.
