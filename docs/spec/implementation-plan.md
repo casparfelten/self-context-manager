@@ -1,12 +1,20 @@
 # Implementation Plan
 
-> What needs to change in the codebase to align with the SSOT (2026-02-24 revision). Each section references the SSOT section it implements. Ordered by dependency — earlier items unblock later ones.
+> What needs to change in the codebase to align with the SSOT (2026-02-24 revision, content/infrastructure split). Each section references the SSOT section it implements. Ordered by dependency — earlier items unblock later ones.
 
 ---
 
 ## 1) Types — `src/types.ts`
 
-**Implements: SSOT §2.2, §2.3, §2.5, §3.1**
+**Implements: SSOT §2.1, §2.2, §2.3, §2.5, §3.1**
+
+### Key change: content vs infrastructure
+
+Object types are split into two categories:
+- **Content objects** (`file`, `toolcall`) — participate in session index, metadata pool, active set. Agent can activate/deactivate.
+- **Infrastructure objects** (`chat`, `system_prompt`, `session`) — stored in XTDB for persistence. Referenced by session wrapper. Rendered in fixed positions (system prompt at top, chat as conversation). NOT in session index, metadata pool, or active set.
+
+The current code treats chat and system_prompt as objects with `locked: true` in the active set, then special-cases them in rendering. The new design removes them from the content management system entirely. Cleaner, no special cases.
 
 ### What changes
 
@@ -101,7 +109,7 @@ interface SessionObject extends ObjectEnvelope {
 }
 ```
 
-**Removed fields:** `locked` (type-determined per SSOT §3.3), `provenance` (captured by source binding or type-specific fields), `nickname` (not needed), `id` (use `xt/id`), `metadata_view_hash` and `object_hash` (replaced by new hash scheme).
+**Removed fields:** `locked` (infrastructure objects are outside content management; no locking needed), `provenance` (captured by source binding or type-specific fields), `nickname` (not needed), `id` (use `xt/id`), `metadata_view_hash` and `object_hash` (replaced by new hash scheme).
 
 **Metadata pool:** stores `string[]` of object IDs. The client looks up metadata (path, file_type, char_count, tool, status) from the database or in-memory cache. No duplication of mutable fields in the session document.
 
@@ -175,6 +183,18 @@ A host agent reading `/home/abaris/project/src/main.ts` with no mount mapping: d
 
 For bind-mounted files, the client watches the **canonical** (host-side) path, since the client runs on the host and that's the path it can access. For container-internal files (default filesystem ID, no mount mapping), the client does not set up a persistent watcher — these files are only indexed when the agent accesses them via tool calls.
 
+### Reverse translation for display
+
+The resolver also supports reverse translation: given a canonical path, return the agent-visible path. Used by the metadata rendering to show paths the agent recognises. Falls back to canonical path if no mapping matches (e.g., object created by a different client).
+
+```typescript
+reverseResolve(canonicalPath: string, filesystemId: string): string {
+  // Find mount mapping where canonicalPrefix matches and filesystemId matches
+  // Replace canonicalPrefix with agentPrefix
+  // Fall back to canonicalPath if no match
+}
+```
+
 ---
 
 ## 4) Indexer — new module `src/indexer.ts`
@@ -228,7 +248,7 @@ Also: `indexFileDeletion(xtdb, source)` — writes a version with null content, 
 
 ## 5) Extension — `src/phase3-extension.ts`
 
-**Implements: SSOT §3, §5.1, §5.6, §5.7, §5.8**
+**Implements: SSOT §2.1, §3, §5.1, §5.6, §5.7, §5.8**
 
 External API (activate, deactivate, pin, read, wrappedWrite, etc.) stays the same. Internal changes:
 
@@ -242,9 +262,15 @@ The `FilesystemResolver` encapsulates all filesystem-awareness logic. The extens
 
 Replace `file:${path}` with `identityHash('file', resolver.resolve(path))`. All file references go through the resolver.
 
+### Content/infrastructure split
+
+Chat and system_prompt objects are created and updated by the client but NOT added to the session index, metadata pool, or active set. They're referenced by `chat_ref` and `system_prompt_ref` on the session document. The `objects` map in memory should distinguish between content objects (available for activate/deactivate) and infrastructure objects (managed internally).
+
+The `assembleContext` method renders infrastructure objects in their fixed positions (system prompt first, chat as conversation) and content objects in the metadata/active sections. No special-casing of "locked" objects.
+
 ### Session index
 
-New `sessionIndex: Set<string>`. Any time an object is encountered (indexed, discovered, loaded on resume), add its ID. Never remove. Persisted as `session_index` in the session wrapper.
+New `sessionIndex: Set<string>`. Content objects only. Any time a content object is encountered (indexed, discovered, loaded on resume), add its ID. Never remove. Persisted as `session_index` in the session wrapper.
 
 ### Metadata pool
 
@@ -252,9 +278,9 @@ Change from `MetadataEntry[]` to `Set<string>` of object IDs. The client maintai
 
 ```typescript
 interface MetadataCache {
-  type: ObjectType;
+  type: 'file' | 'toolcall';  // content objects only
   // file-specific
-  path?: string;
+  displayPath?: string;  // agent-visible path (reverse-translated)
   file_type?: string;
   char_count?: number;
   // toolcall-specific
@@ -312,17 +338,18 @@ No changes in this round.
 
 - `phase1.test.ts` — update document construction (source bindings, new hashes, no `locked`/`provenance`/`nickname`).
 - `phase2.test.ts` — minimal (context manager, toolcall-focused, largely unchanged).
-- `phase3.test.ts` — update file operations for source-derived identity, indexer module, resolver.
+- `phase3.test.ts` — update file operations for source-derived identity, indexer module, resolver. Verify chat/system_prompt are not in session index or metadata pool.
 - `phase4.test.ts` — update watcher/resume for canonical paths, hash-based reconciliation (replace mtime).
-- `e2e-final.test.ts` — update for new document structure.
+- `e2e-final.test.ts` — update for new document structure. Verify content/infrastructure split in rendered context.
 
 ### New tests
 
+- **Content/infrastructure split:** chat and system_prompt not in session index. Not in metadata pool. Not in active set. Rendered in fixed positions. Tool calls and files ARE in session index.
 - **Identity hash:** same source → same ID. Different filesystem ID → different ID. Same path string, different filesystem → different object.
 - **Source hash indexing:** unchanged file → `unchanged` (no write). Changed file → `updated` (new version). Verify via XTDB history.
 - **Session index:** append-only guarantee. Deactivated objects remain. Deleted files remain (null-content latest version).
-- **Filesystem resolver:** prefix matching, path translation, default fallback, longest-match precedence.
-- **Path translation:** mount mapping produces correct canonical paths. Host agent and sandboxed agent produce same source binding for bind-mounted file.
+- **Filesystem resolver:** prefix matching, path translation, reverse translation, default fallback, longest-match precedence.
+- **Path display:** metadata rendering shows agent-visible path (reverse-translated), not canonical path. Non-sandboxed: paths are identical. Sandboxed: agent prefix shown.
 - **Watchability:** bind-mounted paths are watchable, container-internal paths are not.
 - **Indexer:** new → created, unchanged → no-op, changed → updated, deletion → null content. All against real XTDB.
 
@@ -332,7 +359,7 @@ No changes in this round.
 
 ### Remove stale fields from codebase
 
-When updating types: remove all references to `locked`, `provenance`, `nickname`, `id` (in favour of `xt/id`), `metadata_view_hash`, `object_hash`, `mtime_ms`.
+When updating types: remove all references to `locked`, `provenance`, `nickname`, `id` (in favour of `xt/id`), `metadata_view_hash`, `object_hash`, `mtime_ms`. Remove any code that adds chat/system_prompt objects to the active set, metadata pool, or session index.
 
 ### Update references
 
