@@ -61,7 +61,7 @@ Every object document stored in XTDB has two zones:
 | `xt/id` | Object ID. For sourced objects, derived from identity hash. For unsourced, assigned at creation (e.g., `chat:{sessionId}`, tool call ID). |
 | `type` | Object type: `file`, `toolcall`, `chat`, `system_prompt`, `session`. |
 | `source` | Source binding. `null` for unsourced objects. Tagged union by source type (see §2.3). |
-| `identity_hash` | SHA-256 of the immutable envelope fields (type + source). Computed once. Verifies identity consistency. |
+| `identity_hash` | SHA-256 of immutable identity fields. Sourced: type + source. Unsourced: type + xt/id. Computed once. See hash table below. |
 
 **Mutable payload** — creates a new version when changed:
 
@@ -78,9 +78,11 @@ No `locked`, `provenance`, or `nickname` fields. Infrastructure objects don't ne
 
 | Hash | Answers | Input | When computed |
 |------|---------|-------|--------------|
-| `identity_hash` | Is this the same object? | Immutable envelope: `type` + `source` | Once at creation. Never changes. |
-| `source_hash` | Has the external source changed? | Raw source bytes (e.g., file on disk). Not our document — the external thing itself. | Each indexing check. Compared against stored value. |
+| `identity_hash` | Is this the same object? | Sourced: `type` + `source`. Unsourced: `type` + `xt/id`. | Once at creation. Never changes. |
+| `source_hash` | Has the external source changed? | Raw source bytes (e.g., file on disk). Not our document — the external thing itself. `null` if source has never been read (discovery stub). | Each indexing check. Compared against stored value. |
 | `content_hash` | Has the document payload changed? | All mutable payload fields except `source_hash` and `content_hash`, via stable serialisation. | Each write. Covers `content`, type-specific fields, and any future mutable fields. |
+
+For **sourced objects**, identity_hash = `SHA-256(stableStringify({type, source}))` and serves as the `xt/id` (the hash derives the ID). For **unsourced objects**, identity_hash = `SHA-256(stableStringify({type, 'xt/id': assignedId}))` — the assigned ID is an input rather than an output. This ensures every object has a unique identity_hash regardless of sourcing.
 
 `content_hash` explicitly excludes `source_hash` and itself from its input. This avoids circular dependency: `source_hash` is a property of the external source, not of the document payload. When we add new mutable fields in the future, they are automatically included in `content_hash` because the stable serialisation covers all fields not explicitly excluded.
 
@@ -209,7 +211,7 @@ Infrastructure objects do not have context levels. They are always rendered in t
 
 ### 3.3 Activation and deactivation
 
-- `activate(id)` — load content object's content into the active set. Object must be in the metadata pool. If it's only in the session index, promote to metadata pool first, then activate.
+- `activate(id)` — load content object's content into the active set. Object must be in the metadata pool. If it's only in the session index, promote to metadata pool first, then activate. If the object is a sourced file with null content (discovery stub — path known but never read), the client reads the source and runs the full indexing protocol (§5.6) before loading content. If the source is inaccessible, activation fails gracefully (object stays in metadata pool with null content).
 - `deactivate(id)` — remove from active set. Object remains in the metadata pool.
 - Only content objects (file, toolcall) can be activated/deactivated.
 - Recent tool call outputs are auto-activated; older outputs auto-collapse based on a sliding window policy (see §4.3). File objects are not auto-collapsed — the agent explicitly manages them.
@@ -367,7 +369,11 @@ The source determines identity. Two objects with the same source binding are the
 
 ### 5.6 Indexing protocol (sourced content objects)
 
-When a client encounters a file — from an agent tool call, a watcher event, or session resume reconciliation:
+There are two entry points for file indexing: **full indexing** (content is available) and **discovery** (only the path is known). Both produce the same object identity; discovery creates a minimal stub that full indexing later upgrades.
+
+#### Full indexing (content available)
+
+Triggered by: agent reads a file, watcher fires, session resume reconciliation.
 
 1. **Translate path.** Apply mount mappings (§5.3) to get the canonical path and filesystem ID.
 2. **Compute source binding.** `{type: "filesystem", filesystemId: X, path: Y}` where Y is the canonical path.
@@ -377,15 +383,24 @@ When a client encounters a file — from an agent tool call, a watcher event, or
    In both cases, hash the content as a UTF-8 string: `SHA-256(content)`.
 4. **Derive object ID.** `identityHash("file", source)` — SHA-256 of the immutable envelope.
 5. **Check database.** Fetch the current version of the object by ID.
-   - **Not found (new source):** create object with full envelope and payload. First version. Return `created`.
+   - **Not found:** create object with full envelope and payload. First version. Return `created`.
+   - **Found, stored `source_hash` is null** (discovery stub): write new version with content, source hash, content hash, type-specific fields. Return `updated`.
    - **Found, source hash matches stored `source_hash`:** no-op. Return `unchanged`.
-   - **Found, source hash differs:** write new version with updated content, source hash, content hash, and type-specific fields. Immutable envelope is identical. Return `updated`.
-6. **Update session.** Add object ID to session index (if not already present). Add to metadata pool and/or active set as appropriate:
-   - Explicit `read` by agent → add to metadata pool and active set.
-   - Side-effect discovery (ls, grep, find output) → add to metadata pool only (content may not have been read; if only path is known, content is null).
-   - Watcher update → object already in session index; update cached metadata if needed.
+   - **Found, source hash differs from stored `source_hash`:** write new version with updated payload. Return `updated`.
+6. **Update session.** Add object ID to session index (if not already present). Add to metadata pool and active set.
 
 The common case (file hasn't changed) requires one hash computation and one database lookup. No write.
+
+#### Discovery (path only, content not read)
+
+Triggered by: side-effect extraction from tool output (ls, grep, find, tree, etc.). The client observes a file path but does not have the file content.
+
+1. **Translate path** and **compute source binding** — same as full indexing steps 1–2.
+2. **Derive object ID** — same as full indexing step 4.
+3. **Check database.** Fetch current version by ID.
+   - **Not found:** create a **discovery stub** — full immutable envelope, but payload has `content: null`, `source_hash: null`, `char_count: 0`, `file_type` derived from path extension. Return `created`.
+   - **Found** (stub or full object already exists): no-op. Return `unchanged`. Discovery never overwrites existing content.
+4. **Update session.** Add object ID to session index. Add to metadata pool only (not active set — the agent hasn't read the content).
 
 ### 5.7 Unsourced object creation
 
