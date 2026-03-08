@@ -40,7 +40,7 @@ JSON evidence files are in [`data/`](data/).
 
 ## Methodology
 
-See [methodology.md](methodology.md).
+See [context-behavior-methodology.md](context-behavior-methodology.md).
 
 ## Key results
 
@@ -56,4 +56,4 @@ See [methodology.md](methodology.md).
 - Natural behaviour drive (blocked on API key)
 - Extended session (>100 turns)
 - Multiple models (only GPT-4.1 so far)
-- Ablation study (see [eval plan](../eval-plan.md))
+- Ablation study (see [eval plan](../eval-plan-legacy.md))

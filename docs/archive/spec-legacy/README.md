@@ -4,8 +4,9 @@
 
 These files are historical and superseded.
 Current SSOTs are:
-- Intent: `docs/storage-tracking-spec-v1.md`
-- Implementation: `docs/implementation-ssot-v1.md`
+- Intent: `docs/intent-ssot-v1.md`
+- DB implementation: `docs/implementation-db-ssot-v1.md`
+- Agentic implementation: `docs/implementation-agentic-ssot-v1.md`
 
 Contents retained for historical context:
 - `context-manager-ssot.md`

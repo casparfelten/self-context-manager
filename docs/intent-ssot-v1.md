@@ -11,8 +11,10 @@ This document is the canonical behavioral contract for storage/tracking.
 
 Authority rules:
 1. This document defines behavior, invariants, and conflict semantics.
-2. `docs/implementation-ssot-v1.md` is the single implementation SSOT.
-3. If intent vs implementation wording conflicts, this document wins; implementation docs must be updated.
+2. Implementation is split across:
+   - `docs/implementation-db-ssot-v1.md` (DB layer)
+   - `docs/implementation-agentic-ssot-v1.md` (context-loading/agentic layer)
+3. If intent vs implementation wording conflicts, intent wins; implementation docs must be updated.
 
 ---
 
@@ -245,7 +247,7 @@ These are cut from core scope, not deferred-internals pretending to be active.
 
 ## 11) Cross-doc canonical map
 
-- Canonical intent (this doc): `docs/storage-tracking-spec-v1.md`
-- Canonical implementation SSOT: `docs/implementation-ssot-v1.md`
-- Evaluation roadmap: `docs/eval-plan.md`
+- Canonical intent (this doc): `docs/intent-ssot-v1.md`
+- Canonical DB implementation SSOT: `docs/implementation-db-ssot-v1.md`
+- Canonical agentic implementation SSOT: `docs/implementation-agentic-ssot-v1.md`
 - Historical/non-normative docs: `docs/archive/` and `archive/xtdb-prototype/`

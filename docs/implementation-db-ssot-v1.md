@@ -1,25 +1,26 @@
-# Implementation SSOT v1 — Storage (SQLite) + Context Loading Boundary
+# Implementation SSOT v1 — Database (SQLite)
 
-Status: **Canonical implementation SSOT (design; not implemented)**
+Status: **Canonical DB implementation SSOT (design; not implemented)**
 Date: 2026-03-03
 
 Behavioral authority:
-- `docs/storage-tracking-spec-v1.md` (intent semantics)
+- `docs/intent-ssot-v1.md` (intent semantics)
 
 Implementation-authority rule:
-- This is the **single** canonical implementation SSOT for v1.
-- Other docs may discuss implementation history/background but are non-authoritative.
+- This is the canonical DB implementation SSOT for v1.
+- Context-loading implementation SSOT is defined separately in `docs/implementation-agentic-ssot-v1.md`.
+- Both implementation docs must conform to `docs/intent-ssot-v1.md`.
 
 ---
 
 ## 0) Scope
 
-This implementation SSOT defines two implementation surfaces and their boundary:
-1. **Storage implementation (SQLite)** — physical tables/indexes and transactional write/read behavior.
-2. **Context loading implementation** — how runtime context assembly reads from storage.
-3. **Query interface boundary** between storage and context-loading layers.
+This implementation SSOT defines the SQLite storage implementation only:
+1. physical tables/indexes,
+2. transactional write/read behavior,
+3. storage query interface (`StoragePort`).
 
-This doc does **not** introduce policy beyond intent spec.
+This doc does **not** define context assembly behavior.
 
 ---
 
@@ -381,42 +382,9 @@ export interface StoragePort {
 
 ---
 
-## 10) Context loading boundary (separate from DB internals)
+## 10) Out-of-scope for this DB implementation profile
 
-The runtime context loader is a separate layer that reads via query interfaces and does not depend on raw table internals.
-
-### 10.1 Query interface contract (storage -> context loader)
-
-Context loader depends only on these read capabilities:
-1. `getLatest(objectId)`
-2. `getHistory(objectId, order)`
-3. `queryReferences(...)`
-4. `getReferrersByTargetVersion(...)`
-5. `getReferrersByTargetHash(...)`
-
-No loader logic may issue direct SQL against implementation tables.
-
-### 10.2 Context loader responsibilities (implementation layer)
-
-Context loader composes LLM-facing context from storage reads:
-1. Resolve session object HEAD via `session_id` linkage.
-2. Load referenced content objects (active/pinned/inactive sets) by explicit refs.
-3. Materialize metadata-first context ordering and selective active content inclusion.
-4. Preserve deterministic ordering for cache stability.
-
-### 10.3 Storage responsibilities (implementation layer)
-
-Storage implementation guarantees:
-1. immutable, ordered version history,
-2. conflict-safe write semantics,
-3. deterministic ref extraction and reverse lookup,
-4. canonical typed-envelope permanence.
-
----
-
-## 11) Out-of-scope for this implementation profile
-
-Not part of this canonical v1 profile:
+Not part of this canonical DB v1 profile:
 - `doc_nodes` and any structural tree rebuild APIs,
 - temporal interval APIs (`getAsOf`, validity windows),
 - `gcDryRun`/GC execution APIs,
@@ -424,8 +392,8 @@ Not part of this canonical v1 profile:
 
 ---
 
-## 12) Cross-doc references
+## 11) Cross-doc references
 
-- Intent authority: `docs/storage-tracking-spec-v1.md`
-- Evaluation plan: `docs/eval-plan.md`
+- Intent authority: `docs/intent-ssot-v1.md`
+- Agentic/context-loading implementation: `docs/implementation-agentic-ssot-v1.md`
 - Historical/non-normative snapshots: `docs/archive/`, `archive/xtdb-prototype/`

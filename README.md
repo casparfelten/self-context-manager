@@ -9,9 +9,9 @@ Context management layer for LLM agents. Controls what is kept, retrieved, and s
 
 ## Canonical docs
 
-- `docs/storage-tracking-spec-v1.md` — **Intent SSOT** (authoritative behavior/invariants)
-- `docs/implementation-ssot-v1.md` — **Implementation SSOT** (single canonical implementation source: SQLite storage + context-loading query boundary)
-- `docs/eval-plan.md` — evaluation roadmap
+- `docs/intent-ssot-v1.md` — **Intent SSOT** (authoritative behavior/invariants)
+- `docs/implementation-db-ssot-v1.md` — **DB Implementation SSOT** (SQLite schema + transactional storage contract)
+- `docs/implementation-agentic-ssot-v1.md` — **Agentic Implementation SSOT** (context loading behavior + query-interface boundary)
 - `docs/README.md` — docs index + authority map
 
 ## Active source layout

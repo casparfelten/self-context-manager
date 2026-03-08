@@ -7,8 +7,9 @@
 A historical context management build plan from the XTDB-era design period.
 
 Superseded canonical docs:
-- Intent SSOT: `docs/storage-tracking-spec-v1.md`
-- Implementation SSOT: `docs/implementation-ssot-v1.md`
+- Intent SSOT: `docs/intent-ssot-v1.md`
+- DB implementation SSOT: `docs/implementation-db-ssot-v1.md`
+- Agentic implementation SSOT: `docs/implementation-agentic-ssot-v1.md`
 
 ## Architecture overview
 

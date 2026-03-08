@@ -6,8 +6,9 @@ Rules:
 - Files here are historical context only.
 - Do not treat archive files as current behavioral or implementation authority.
 - Canonical SSOTs live at:
-  - `docs/storage-tracking-spec-v1.md` (intent)
-  - `docs/implementation-ssot-v1.md` (implementation)
+  - `docs/intent-ssot-v1.md` (intent)
+  - `docs/implementation-db-ssot-v1.md` (DB implementation)
+  - `docs/implementation-agentic-ssot-v1.md` (agentic implementation)
 
 Contents:
 - `spec-legacy/` — superseded legacy spec/SSOT files.

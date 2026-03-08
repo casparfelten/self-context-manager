@@ -2,13 +2,13 @@
 
 ## Canonical active docs
 
-1. `storage-tracking-spec-v1.md` — **Intent SSOT** (authoritative behavior/invariants)
-2. `implementation-ssot-v1.md` — **Implementation SSOT** (single canonical implementation source: SQLite storage + context-loading query boundary)
-3. `eval-plan.md` — evaluation roadmap
+1. `intent-ssot-v1.md` — **Intent SSOT** (authoritative behavior/invariants)
+2. `implementation-db-ssot-v1.md` — **DB Implementation SSOT** (SQLite schema + transactional storage contract)
+3. `implementation-agentic-ssot-v1.md` — **Agentic Implementation SSOT** (context loading behavior + query-interface boundary)
 
 Authority precedence:
-- Intent (`storage-tracking-spec-v1.md`) is canonical for subsystem semantics.
-- Implementation (`implementation-ssot-v1.md`) is the single canonical implementation SSOT and must conform to intent.
+- Intent (`intent-ssot-v1.md`) is canonical for subsystem semantics.
+- DB and Agentic implementation SSOTs must conform to intent.
 
 ## Canonical profile summary (v1)
 
@@ -29,6 +29,7 @@ Explicitly out of scope in this profile:
 - `docs/archive/` — historical snapshots moved out of canonical path.
   - `docs/archive/spec-legacy/` — prior SSOT/implementation docs (superseded).
   - `docs/archive/build-notes-legacy/` — rebuild notes and historical execution logs.
-- `docs/experiments/` — experimental methodology, data, and reports (non-authoritative for runtime contracts).
+  - `docs/archive/experiments-legacy/` — experimental methodology, data, and reports.
+  - `docs/archive/eval-plan-legacy.md` — evaluation roadmap (historical).
 - XTDB prototype archive:
   - `archive/xtdb-prototype/`
