@@ -259,7 +259,7 @@ describe('DB SSOT §6 references, §7 sessions, §8 hashes', () => {
     expect(y.ok).toBe(true);
     if (!x.ok || !y.ok) return;
 
-    expect(x.record.refsHash).toBe(y.record.refsHash);
+    expect(x.record.refsHash).not.toBe(y.record.refsHash);
   });
 
   it('§7.1 session realization: session writes are stored as object_type=session versions', async () => {

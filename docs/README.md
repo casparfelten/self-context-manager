@@ -26,10 +26,10 @@ Explicitly out of scope in this profile:
 
 ## Historical/non-normative docs
 
+Note: historical docs may reference removed legacy backend artifacts; those references are archival context only.
+
 - `docs/archive/` — historical snapshots moved out of canonical path.
   - `docs/archive/spec-legacy/` — prior SSOT/implementation docs (superseded).
   - `docs/archive/build-notes-legacy/` — rebuild notes and historical execution logs.
   - `docs/archive/experiments-legacy/` — experimental methodology, data, and reports.
   - `docs/archive/eval-plan-legacy.md` — evaluation roadmap (historical).
-- XTDB prototype archive:
-  - `archive/xtdb-prototype/`

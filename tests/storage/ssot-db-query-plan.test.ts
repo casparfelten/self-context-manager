@@ -93,6 +93,7 @@ describe('DB SSOT §4 indexes are used by canonical query shapes', () => {
 
     const targetHash = anyPinned[0].targetObjectHash;
     expect(targetHash).toBeTruthy();
+    if (!targetHash) throw new Error('expected pinned ref targetObjectHash');
 
     const planHash = inspect
       .prepare('EXPLAIN QUERY PLAN SELECT * FROM doc_references WHERE target_object_hash = ?')

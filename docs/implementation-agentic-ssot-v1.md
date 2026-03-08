@@ -112,4 +112,4 @@ Not part of this canonical agentic profile:
 
 - Intent SSOT: `docs/intent-ssot-v1.md`
 - DB implementation SSOT: `docs/implementation-db-ssot-v1.md`
-- Historical/non-normative docs: `docs/archive/`, `archive/xtdb-prototype/`
+- Historical/non-normative docs: `docs/archive/`

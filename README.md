@@ -4,8 +4,9 @@ Context management layer for LLM agents. Controls what is kept, retrieved, and s
 
 ## Status
 
-- XTDB prototype is archived under `archive/xtdb-prototype/`.
-- Active storage/tracking work is specified in canonical v1 docs (design contract stage; implementation pending).
+- Active storage/runtime path is SQLite-based.
+- Storage is implemented behind `StoragePort` with SSOT DB conformance tests.
+- Runtime (`SelfContextManager`) uses `StoragePort` and no longer depends on the legacy HTTP backend.
 
 ## Canonical docs
 
@@ -16,18 +17,18 @@ Context management layer for LLM agents. Controls what is kept, retrieved, and s
 
 ## Active source layout
 
-```
-src/                        # Active TypeScript source (core context manager)
+```text
+src/                        # Active TypeScript source (core context manager + sqlite storage)
 tests/                      # Active tests (vitest)
 docs/                       # Canonical specs + docs index
   archive/                  # Historical snapshots (non-normative)
-archive/
-  xtdb-prototype/           # Archived XTDB implementation + docs + tests + scripts
 ```
 
-## Archive
+## Removal note
 
-See `archive/xtdb-prototype/README.md` for what was moved and why.
+- Legacy external-backend client, scripts, and integration tests were removed.
+- Legacy `tests/ssot-conformance/` suite was removed with that backend model; current conformance coverage is under `tests/storage/` and runtime phase/e2e tests.
+- Historical archive docs may still reference the removed backend; treat those as non-normative history.
 
 ## License
 

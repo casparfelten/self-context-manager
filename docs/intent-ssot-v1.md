@@ -250,4 +250,4 @@ These are cut from core scope, not deferred-internals pretending to be active.
 - Canonical intent (this doc): `docs/intent-ssot-v1.md`
 - Canonical DB implementation SSOT: `docs/implementation-db-ssot-v1.md`
 - Canonical agentic implementation SSOT: `docs/implementation-agentic-ssot-v1.md`
-- Historical/non-normative docs: `docs/archive/` and `archive/xtdb-prototype/`
+- Historical/non-normative docs: `docs/archive/`

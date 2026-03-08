@@ -38,7 +38,7 @@ describe('e2e final - realistic lifecycle and continuity', () => {
     expect(alphaRead.ok).toBe(true);
     expect(betaRead.ok).toBe(true);
 
-    const betaEntity = await ext.getXtEntity(betaRead.id!);
+    const betaEntity = await ext.getEntity(betaRead.id!);
     expect(betaEntity?.content).toBe('beta-v2-edit');
 
     expect(ext.deactivate(betaRead.id!).ok).toBe(true);
@@ -109,12 +109,12 @@ describe('e2e final - realistic lifecycle and continuity', () => {
 
     await writeFile(trackedPath, 'tracked-v2', 'utf8');
     await sleep(950);
-    let trackedEntity = await ext1.getXtEntity(tracked.id!);
+    let trackedEntity = await ext1.getEntity(tracked.id!);
     expect(trackedEntity?.content).toBe('tracked-v2');
 
     await rm(trackedPath, { force: true });
     await sleep(950);
-    trackedEntity = await ext1.getXtEntity(tracked.id!);
+    trackedEntity = await ext1.getEntity(tracked.id!);
     expect(trackedEntity?.content).toBeNull();
     expect(trackedEntity?.path).toBeNull();
 
@@ -129,7 +129,7 @@ describe('e2e final - realistic lifecycle and continuity', () => {
     expect(snap.metadataPool.map((m) => m.id)).toContain(resume.id!);
     expect(snap.activeSet.has(resume.id!)).toBe(false);
 
-    const resumedEntity = await ext2.getXtEntity(resume.id!);
+    const resumedEntity = await ext2.getEntity(resume.id!);
     expect(resumedEntity?.content).toBe('resume-v2-while-down');
 
     await ext2.close();

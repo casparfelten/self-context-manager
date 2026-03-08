@@ -3,8 +3,5 @@ dist/
 .npm/
 data/
 tmp/
-xtdb/*.jar
-xtdb/*.log
-xtdb/*.pid
 *.tsbuildinfo
 .pi/messenger/

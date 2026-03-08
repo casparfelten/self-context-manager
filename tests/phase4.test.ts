@@ -3,14 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, expect, it } from 'vitest';
-import { SelfContextManager, XtdbClient, type HarnessMessage } from '../src/index.js';
+import { SelfContextManager, type HarnessMessage } from '../src/index.js';
 
 function text(value: string) {
   return [{ type: 'text' as const, text: value }];
 }
 
 describe('phase 4 - watcher, resume, cursor robustness', () => {
-  it('indexed file change triggers a new XTDB version via watcher', async () => {
+  it('indexed file change triggers a new version via watcher', async () => {
     const root = await mkdtemp(join(tmpdir(), 'scm-phase4-'));
     const filePath = join(root, 'tracked.txt');
     await writeFile(filePath, 'v1', 'utf8');
@@ -22,11 +22,10 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
     await writeFile(filePath, 'v2-updated', 'utf8');
     await sleep(900);
 
-    const xtdb = new XtdbClient('http://172.17.0.1:3000');
-    const history = await xtdb.history(read.id!);
+    const history = await ext.getObjectHistory(read.id!);
     expect(history.length).toBeGreaterThanOrEqual(2);
 
-    const latest = await ext.getXtEntity(read.id!);
+    const latest = await ext.getEntity(read.id!);
     expect(latest?.content).toBe('v2-updated');
     await ext.close();
     await rm(root, { recursive: true, force: true });
@@ -44,7 +43,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
     await rm(filePath, { force: true });
     await sleep(900);
 
-    const latest = await ext.getXtEntity(read.id!);
+    const latest = await ext.getEntity(read.id!);
     expect(latest?.content).toBeNull();
     expect(latest?.path).toBeNull();
     await ext.close();
@@ -94,7 +93,7 @@ describe('phase 4 - watcher, resume, cursor robustness', () => {
     expect(snap.metadataPool.map((m) => m.id)).toContain(read.id!);
     expect(snap.activeSet.has(read.id!)).toBe(false);
 
-    const latest = await ext2.getXtEntity(read.id!);
+    const latest = await ext2.getEntity(read.id!);
     expect(latest?.content).toBe('changed-while-down');
 
     await ext2.close();

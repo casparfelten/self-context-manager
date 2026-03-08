@@ -396,4 +396,4 @@ Not part of this canonical DB v1 profile:
 
 - Intent authority: `docs/intent-ssot-v1.md`
 - Agentic/context-loading implementation: `docs/implementation-agentic-ssot-v1.md`
-- Historical/non-normative snapshots: `docs/archive/`, `archive/xtdb-prototype/`
+- Historical/non-normative snapshots: `docs/archive/`

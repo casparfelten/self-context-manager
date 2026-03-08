@@ -9,17 +9,17 @@ function text(value: string) {
 }
 
 describe('phase 3 - pi extension + tools', () => {
-  it('loads extension and writes session/chat/system objects to XTDB', async () => {
+  it('loads extension and writes session/chat/system objects to storage', async () => {
     const ext = new SelfContextManager({ sessionId: `s-${Date.now()}`, systemPrompt: 'SYS' });
     await ext.load();
 
-    const session = await ext.getXtEntity(ext.sessionObjectId);
-    const chat = await ext.getXtEntity(ext.chatObjectId);
-    const sys = await ext.getXtEntity(ext.systemPromptObjectId);
+    const session = await ext.getEntity(ext.sessionObjectId);
+    const chat = await ext.getEntity(ext.chatObjectId);
+    const sys = await ext.getEntity(ext.systemPromptObjectId);
 
-    expect(session?.['xt/id']).toBe(ext.sessionObjectId);
-    expect(chat?.['xt/id']).toBe(ext.chatObjectId);
-    expect(sys?.['xt/id']).toBe(ext.systemPromptObjectId);
+    expect(session?.id).toBe(ext.sessionObjectId);
+    expect(chat?.id).toBe(ext.chatObjectId);
+    expect(sys?.id).toBe(ext.systemPromptObjectId);
   });
 
   it('read() indexes file, adds metadata, and appears in active context', async () => {
@@ -32,7 +32,7 @@ describe('phase 3 - pi extension + tools', () => {
     const readResult = await ext.read('note.md');
 
     expect(readResult.ok).toBe(true);
-    const entity = await ext.getXtEntity(readResult.id!);
+    const entity = await ext.getEntity(readResult.id!);
     expect(entity?.content).toBe('hello from phase3');
 
     const context = await ext.transformContext([]);
@@ -43,19 +43,19 @@ describe('phase 3 - pi extension + tools', () => {
     expect(active.content).toContain('hello from phase3');
   });
 
-  it('wrapped write/edit update XTDB file object', async () => {
+  it('wrapped write/edit update stored file object', async () => {
     const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
     const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-write`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
 
     await ext.wrappedWrite('doc.txt', 'v1');
     const id = `file:${join(root, 'doc.txt')}`;
-    let entity = await ext.getXtEntity(id);
+    let entity = await ext.getEntity(id);
     expect(entity?.content).toBe('v1');
 
     await writeFile(join(root, 'doc.txt'), 'v2-edit', 'utf8');
     await ext.wrappedEdit('doc.txt');
-    entity = await ext.getXtEntity(id);
+    entity = await ext.getEntity(id);
     expect(entity?.content).toBe('v2-edit');
   });
 
@@ -97,7 +97,7 @@ describe('phase 3 - pi extension + tools', () => {
     expect(combined).not.toContain('raw ls output should not appear inline');
   });
 
-  it('wrappedFind indexes discovered paths as metadata-only XTDB file objects', async () => {
+  it('wrappedFind indexes discovered paths as metadata-only stored file objects', async () => {
     const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
     const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-find`, workspaceRoot: root, systemPrompt: 'SYS' });
     await ext.load();
@@ -111,7 +111,7 @@ describe('phase 3 - pi extension + tools', () => {
     expect(ids).toContain(alphaId);
     expect(ids).toContain(betaId);
 
-    const alpha = await ext.getXtEntity(alphaId);
+    const alpha = await ext.getEntity(alphaId);
     expect(alpha?.content).toBeNull();
     expect(alpha?.char_count).toBe(0);
   });
@@ -130,7 +130,7 @@ describe('phase 3 - pi extension + tools', () => {
     expect(ids).toContain(mainId);
     expect(ids).toContain(readmeId);
 
-    const readme = await ext.getXtEntity(readmeId);
+    const readme = await ext.getEntity(readmeId);
     expect(readme?.content).toBeNull();
   });
 

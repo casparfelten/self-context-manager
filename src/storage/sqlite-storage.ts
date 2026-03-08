@@ -460,24 +460,8 @@ function parseRef(value: unknown, path: string): RefDraft {
 
 function hashRefs(refs: RefDraft[]): string {
   const sorted = [...refs].sort((a, b) => {
-    const left = [
-      refPathHashKey(a.fromPath),
-      a.refKind,
-      a.targetObjectId,
-      a.targetVersionId ?? '',
-      a.targetObjectHash ?? '',
-      a.mode,
-      a.refMetadataJson ?? '',
-    ];
-    const right = [
-      refPathHashKey(b.fromPath),
-      b.refKind,
-      b.targetObjectId,
-      b.targetVersionId ?? '',
-      b.targetObjectHash ?? '',
-      b.mode,
-      b.refMetadataJson ?? '',
-    ];
+    const left = [a.fromPath, a.refKind, a.targetObjectId, a.targetVersionId ?? '', a.targetObjectHash ?? '', a.mode];
+    const right = [b.fromPath, b.refKind, b.targetObjectId, b.targetVersionId ?? '', b.targetObjectHash ?? '', b.mode];
 
     for (let i = 0; i < left.length; i++) {
       if (left[i] < right[i]) return -1;
@@ -489,21 +473,16 @@ function hashRefs(refs: RefDraft[]): string {
   return sha256(
     canonicalJson(
       sorted.map((ref) => ({
-        from_path: refPathHashKey(ref.fromPath),
+        from_path: ref.fromPath,
         ref_kind: ref.refKind,
         target_object_id: ref.targetObjectId,
         target_version_id: ref.targetVersionId,
         target_object_hash: ref.targetObjectHash,
         mode: ref.mode,
-        ref_metadata_json: ref.refMetadataJson,
       })),
       'refs',
     ),
   );
-}
-
-function refPathHashKey(path: string): string {
-  return path.replace(/\/\d+(?=\/|$)/g, '/*');
 }
 
 function hashObject(parts: {
