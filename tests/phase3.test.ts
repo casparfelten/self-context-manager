@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -147,6 +147,32 @@ describe('phase 3 - pi extension + tools', () => {
     ids = ext.getSnapshot().metadataPool.filter((m) => m.type === 'file').map((m) => m.id).join('\n');
     expect(ids).toContain(`file:${join(root, 'seen.txt')}`);
     expect(ids).toContain(`file:${join(root, 'src/index.ts')}`);
+  });
+
+  it('observeToolExecutionEnd infers ls output file paths relative to ls target path', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    await mkdir(join(root, 'fixtures/live-drive'), { recursive: true });
+    await writeFile(join(root, 'fixtures/live-drive/a.md'), 'a', 'utf8');
+    await writeFile(join(root, 'fixtures/live-drive/b.md'), 'b', 'utf8');
+
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-bash-ls-infer`, workspaceRoot: root, systemPrompt: 'SYS' });
+    await ext.load();
+
+    await ext.observeToolExecutionEnd('bash', 'ls fixtures/live-drive\na.md\nb.md');
+
+    const ids = ext.getSnapshot().metadataPool.filter((m) => m.type === 'file').map((m) => m.id);
+    expect(ids).toContain(`file:${join(root, 'fixtures/live-drive/a.md')}`);
+    expect(ids).toContain(`file:${join(root, 'fixtures/live-drive/b.md')}`);
+    expect(ids).not.toContain(`file:${join(root, 'a.md')}`);
+    expect(ids).not.toContain(`file:${join(root, 'b.md')}`);
+  });
+
+  it('read() missing-file path returns structured failure instead of throwing', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'scm-phase3-'));
+    const ext = new SelfContextManager({ sessionId: `s-${Date.now()}-read-missing`, workspaceRoot: root, systemPrompt: 'SYS' });
+    await ext.load();
+
+    await expect(ext.read('fixtures/live-drive/missing.md')).resolves.toMatchObject({ ok: false });
   });
 
   it('assembled Message[] structure sanity', async () => {
