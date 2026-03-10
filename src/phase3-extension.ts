@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { tmpdir } from 'node:os';
-import { dirname, extname, isAbsolute, resolve } from 'node:path';
+import { basename, dirname, extname, isAbsolute, resolve } from 'node:path';
 import chokidar, { type FSWatcher } from 'chokidar';
 import type { HarnessMessage, LlmMessage, ContentPart } from './context-manager.js';
 import { SqliteStorage } from './storage/sqlite-storage.js';
@@ -47,10 +47,38 @@ type SessionMetadata = {
   metadata_pool?: MetadataEntry[];
 };
 
+type PinnedAnchor = {
+  targetVersionId?: string;
+  targetObjectHash?: string;
+};
+
 type SessionState = {
   activeIds: string[];
-  pinnedIds: string[];
+  pinned: Array<{ id: string; anchor: PinnedAnchor }>;
   metadataPool: MetadataEntry[];
+};
+
+type SessionRefScope = 'chat_ref' | 'system_prompt_ref' | 'active_set' | 'inactive_set' | 'pinned_set';
+
+type SessionRefEntry = {
+  scope: SessionRefScope;
+  index: number;
+  ref: Ref;
+};
+
+type ResolvedSessionRef = SessionRefEntry & {
+  record: VersionRecord | null;
+  unresolvedReason?: string;
+};
+
+type ResolvedActiveContent = {
+  key: string;
+  objectId: string;
+  versionId: string;
+  content: string;
+  source: 'active_set' | 'pinned_set';
+  mode: Ref['mode'];
+  refKind: string;
 };
 
 // Legacy external backend support was intentionally removed.
@@ -65,6 +93,7 @@ export class SelfContextManager {
   private readonly metadataSeen = new Set<string>();
   private readonly activeSet = new Set<string>();
   private readonly pinnedSet = new Set<string>();
+  private readonly pinnedAnchors = new Map<string, PinnedAnchor>();
   private readonly latestVersionByObject = new Map<string, string>();
 
   private readonly chatLog: HarnessMessage[] = [];
@@ -76,6 +105,7 @@ export class SelfContextManager {
   private lastMessagesRef: HarnessMessage[] | null = null;
   private lastCursorSignature: string | null = null;
   private persistChain: Promise<void> = Promise.resolve();
+  private persistError: Error | null = null;
 
   readonly sessionObjectId: string;
   readonly chatObjectId: string;
@@ -154,7 +184,10 @@ export class SelfContextManager {
       }
     }
 
-    for (const id of existing.pinnedIds) this.pinnedSet.add(id);
+    for (const pinned of existing.pinned) {
+      this.pinnedSet.add(pinned.id);
+      this.pinnedAnchors.set(pinned.id, { ...pinned.anchor });
+    }
     for (const id of existing.activeIds) this.activeSet.add(id);
 
     for (const id of this.activeSet) {
@@ -168,13 +201,23 @@ export class SelfContextManager {
 
   async transformContext(messages: HarnessMessage[]): Promise<LlmMessage[]> {
     await this.consumeMessages(messages);
+    await this.awaitPersist();
     return this.assembleContext();
   }
 
   async read(path: string): Promise<{ ok: boolean; message: string; id?: string }> {
     const absolutePath = this.resolvePath(path);
     const id = `file:${absolutePath}`;
-    await this.indexFileFromDisk(absolutePath, id, 'client', 'manual');
+
+    try {
+      await this.indexFileFromDisk(absolutePath, id, 'client', 'manual');
+    } catch (error) {
+      const code =
+        typeof error === 'object' && error !== null && 'code' in error ? String((error as { code?: unknown }).code) : '';
+      if (code === 'ENOENT') return { ok: false, message: `read failed missing file path=${absolutePath}` };
+      throw error;
+    }
+
     this.activeSet.add(id);
     this.enqueuePersist();
     return { ok: true, message: `read ok id=${id}`, id };
@@ -201,6 +244,12 @@ export class SelfContextManager {
   pin(id: string): { ok: boolean; message: string } {
     if (!this.knowsObject(id)) return { ok: false, message: `Object not found: ${id}` };
     this.pinnedSet.add(id);
+
+    if (!this.pinnedAnchors.has(id)) {
+      const cached = this.latestVersionByObject.get(id);
+      if (cached) this.pinnedAnchors.set(id, { targetVersionId: cached });
+    }
+
     this.enqueuePersist();
     return { ok: true, message: `pinned ${id}` };
   }
@@ -208,6 +257,7 @@ export class SelfContextManager {
   unpin(id: string): { ok: boolean; message: string } {
     if (!this.knowsObject(id) && !this.pinnedSet.has(id)) return { ok: false, message: `Object not found: ${id}` };
     this.pinnedSet.delete(id);
+    this.pinnedAnchors.delete(id);
     this.enqueuePersist();
     return { ok: true, message: `unpinned ${id}` };
   }
@@ -241,9 +291,25 @@ export class SelfContextManager {
 
   async observeToolExecutionEnd(toolName: string, commandOrOutput: string): Promise<void> {
     if (toolName !== 'bash') return;
-    const tokens = commandOrOutput.split(/\s+/).filter(Boolean);
-    const guessed = tokens.filter((t) => t.includes('/') || t.includes('.'));
-    await this.indexDiscoveredPaths(guessed);
+
+    const lines = commandOrOutput.split('\n');
+    const command = lines[0]?.trim() ?? '';
+    const outputLines = lines.slice(1);
+
+    if (outputLines.length > 0 && this.isLsCommand(command)) {
+      const basePath = this.extractLsTargetPath(command);
+      const inferred: string[] = [];
+
+      for (const line of outputLines) {
+        const mapped = this.mapLsOutputPath(basePath, line);
+        if (mapped) inferred.push(mapped);
+      }
+
+      await this.indexDiscoveredPaths(inferred);
+      return;
+    }
+
+    await this.indexDiscoveredPaths(this.extractBashPathTokens(commandOrOutput));
   }
 
   async getEntity(id: string): Promise<Record<string, unknown> | null> {
@@ -261,7 +327,7 @@ export class SelfContextManager {
   }
 
   async close(): Promise<void> {
-    await this.persistChain;
+    await this.awaitPersist();
     await this.watcher.close();
     this.closeStorage?.();
   }
@@ -331,6 +397,8 @@ export class SelfContextManager {
       return;
     }
 
+    let mutated = false;
+
     for (const message of messages.slice(this.cursor)) {
       this.chatLog.push(message);
       if (message.role !== 'toolResult') continue;
@@ -372,12 +440,14 @@ export class SelfContextManager {
       }
 
       this.activeSet.add(message.toolCallId);
+      mutated = true;
     }
 
     this.cursor = messages.length;
     this.lastMessagesRef = messages;
     this.lastCursorSignature = this.cursor > 0 ? this.signature(messages[this.cursor - 1]) : null;
-    this.enqueuePersist();
+
+    if (mutated) this.enqueuePersist();
   }
 
   private async indexFileFromDisk(
@@ -540,29 +610,53 @@ export class SelfContextManager {
   }
 
   private enqueuePersist(): void {
-    this.persistChain = this.persistChain.then(() => this.persistSessionState()).catch(() => undefined);
+    this.persistChain = this.persistChain
+      .catch(() => undefined)
+      .then(() => this.persistSessionState())
+      .catch((error) => {
+        this.persistError = asError(error);
+      });
+  }
+
+  private async awaitPersist(): Promise<void> {
+    await this.persistChain;
+    if (!this.persistError) return;
+
+    const error = this.persistError;
+    this.persistError = null;
+    throw error;
   }
 
   private async persistSessionState(): Promise<void> {
     const metadataIds = new Set(this.metadataPool.map((m) => m.id));
-    const inactiveIds = [...metadataIds].filter((id) => !this.activeSet.has(id));
+    const activeIds = [...this.activeSet].sort((a, b) => a.localeCompare(b));
+    const inactiveIds = [...metadataIds].filter((id) => !this.activeSet.has(id)).sort((a, b) => a.localeCompare(b));
 
     const pinnedRefs: Ref[] = [];
-    for (const id of this.pinnedSet) {
-      const versionId = await this.latestVersionId(id);
-      if (!versionId) continue;
-      pinnedRefs.push({
+    for (const id of [...this.pinnedSet].sort((a, b) => a.localeCompare(b))) {
+      let anchor = this.pinnedAnchors.get(id);
+      if (!anchor?.targetVersionId && !anchor?.targetObjectHash) {
+        const versionId = await this.latestVersionId(id);
+        if (!versionId) continue;
+        anchor = { targetVersionId: versionId };
+        this.pinnedAnchors.set(id, anchor);
+      }
+
+      const pinnedRef: Ref = {
         target_object_id: id,
         mode: 'pinned',
-        target_version_id: versionId,
         ref_kind: 'session-pinned',
-      });
+      };
+
+      if (anchor.targetVersionId) pinnedRef.target_version_id = anchor.targetVersionId;
+      if (anchor.targetObjectHash) pinnedRef.target_object_hash = anchor.targetObjectHash;
+      pinnedRefs.push(pinnedRef);
     }
 
     const content: SessionContent = {
       chat_ref: this.makeDynamicRef(this.chatObjectId, 'session-chat-root'),
       system_prompt_ref: this.makeDynamicRef(this.systemPromptObjectId, 'session-system-root'),
-      active_set: [...this.activeSet].map((id) => this.makeDynamicRef(id, 'session-active')),
+      active_set: activeIds.map((id) => this.makeDynamicRef(id, 'session-active')),
       inactive_set: inactiveIds.map((id) => this.makeDynamicRef(id, 'session-inactive')),
       pinned_set: pinnedRefs,
     };
@@ -572,9 +666,10 @@ export class SelfContextManager {
       objectType: 'session',
       writerKind: 'system',
       writeReason: 'system',
+      expectedCurrentVersionId: this.latestVersionByObject.get(this.sessionObjectId),
       contentStruct: content,
       metadata: {
-        metadata_pool: this.metadataPool,
+        metadata_pool: this.sortMetadataEntries(this.metadataPool),
       },
       sessionId: this.options.sessionId,
     });
@@ -593,7 +688,7 @@ export class SelfContextManager {
 
     return {
       activeIds: this.refIds(content.active_set),
-      pinnedIds: this.refIds(content.pinned_set),
+      pinned: this.parsePinnedState(content.pinned_set),
       metadataPool,
     };
   }
@@ -638,6 +733,26 @@ export class SelfContextManager {
     return ids;
   }
 
+  private parsePinnedState(value: unknown): Array<{ id: string; anchor: PinnedAnchor }> {
+    if (!Array.isArray(value)) return [];
+
+    const pinned: Array<{ id: string; anchor: PinnedAnchor }> = [];
+    for (const item of value) {
+      if (typeof item === 'string') {
+        pinned.push({ id: item, anchor: {} });
+        continue;
+      }
+      if (!isRecord(item) || typeof item.target_object_id !== 'string') continue;
+
+      const anchor: PinnedAnchor = {};
+      if (typeof item.target_version_id === 'string') anchor.targetVersionId = item.target_version_id;
+      if (typeof item.target_object_hash === 'string') anchor.targetObjectHash = item.target_object_hash;
+      pinned.push({ id: item.target_object_id, anchor });
+    }
+
+    return pinned;
+  }
+
   private async fetchObjectState(objectId: string): Promise<ObjectState | null> {
     const latest = await this.storage.getLatest(objectId);
     if (!latest) return null;
@@ -676,6 +791,9 @@ export class SelfContextManager {
     });
 
     if (result.ok === false) {
+      if ('validation' in result) {
+        throw new Error(`storage_validation:${result.reason}:${input.objectId}`);
+      }
       throw new Error(`storage_conflict:${result.reason}:${input.objectId}`);
     }
 
@@ -691,13 +809,29 @@ export class SelfContextManager {
     };
   }
 
-  private assembleContext(): LlmMessage[] {
-    const messages: LlmMessage[] = [{ role: 'system', content: this.options.systemPrompt ?? '' }];
-    messages.push({ role: 'user', content: this.renderMetadataPool() });
+  private async assembleContext(): Promise<LlmMessage[]> {
+    const resolved = await this.resolveSessionContext();
+
+    const messages: LlmMessage[] = [{ role: 'system', content: resolved.systemPrompt }];
+    messages.push({ role: 'user', content: this.renderMetadataPool(resolved.metadataPool, resolved.metadataRefLines) });
+    messages.push(...this.renderChatHistoryBlock());
+
+    for (const item of resolved.activeContent) {
+      messages.push({
+        role: 'user',
+        content: `ACTIVE_CONTENT id=${item.objectId} source=${item.source} mode=${item.mode} version=${item.versionId}\n${item.content}`,
+      });
+    }
+
+    return messages;
+  }
+
+  private renderChatHistoryBlock(): LlmMessage[] {
+    const block: LlmMessage[] = [];
 
     for (const msg of this.chatLog) {
       if (msg.role === 'toolResult') {
-        messages.push({
+        block.push({
           role: 'toolResult',
           toolCallId: msg.toolCallId,
           toolName: msg.toolName,
@@ -709,31 +843,288 @@ export class SelfContextManager {
       }
 
       if (msg.role === 'assistant') {
-        messages.push(msg);
+        block.push(msg);
       } else {
-        messages.push({ role: 'user', content: this.extractText(msg.content) });
+        block.push({ role: 'user', content: this.extractText(msg.content) });
       }
     }
 
-    for (const id of this.activeSet) {
-      if (id === this.chatObjectId || id === this.systemPromptObjectId) continue;
-      const object = this.objects.get(id);
-      if (!object || object.content === null) continue;
-      messages.push({ role: 'user', content: `ACTIVE_CONTENT id=${id}\n${object.content}` });
-    }
-
-    return messages;
+    return block;
   }
 
-  private renderMetadataPool(): string {
+  private async resolveSessionContext(): Promise<{
+    systemPrompt: string;
+    metadataPool: MetadataEntry[];
+    metadataRefLines: string[];
+    activeContent: ResolvedActiveContent[];
+  }> {
+    const sessionLatest = await this.storage.getLatest(this.sessionObjectId);
+
+    if (!sessionLatest) {
+      return {
+        systemPrompt: this.options.systemPrompt ?? '',
+        metadataPool: this.sortMetadataEntries(this.metadataPool),
+        metadataRefLines: [],
+        activeContent: [],
+      };
+    }
+
+    this.latestVersionByObject.set(this.sessionObjectId, sessionLatest.versionId);
+
+    const content = asRecord(parseJson(sessionLatest.contentStructJson), 'session.content_struct_json');
+    const metadata = asRecord(parseJson(sessionLatest.metadataJson), 'session.metadata_json');
+
+    const metadataPool = this.parseMetadataPool(metadata.metadata_pool ?? content.metadata_pool);
+    const sortedMetadata = this.sortMetadataEntries(metadataPool.length > 0 ? metadataPool : this.metadataPool);
+
+    const refs: SessionRefEntry[] = [];
+
+    const chatRef = this.parseSessionRef(content.chat_ref);
+    if (chatRef) refs.push({ scope: 'chat_ref', index: 0, ref: chatRef });
+
+    const systemPromptRef = this.parseSessionRef(content.system_prompt_ref);
+    if (systemPromptRef) refs.push({ scope: 'system_prompt_ref', index: 0, ref: systemPromptRef });
+
+    this.parseSessionRefArray(content.active_set).forEach((ref, index) => refs.push({ scope: 'active_set', index, ref }));
+    this.parseSessionRefArray(content.inactive_set).forEach((ref, index) => refs.push({ scope: 'inactive_set', index, ref }));
+    this.parseSessionRefArray(content.pinned_set).forEach((ref, index) => refs.push({ scope: 'pinned_set', index, ref }));
+
+    const resolvedRefs = await this.resolveSessionRefs(refs);
+
+    let systemPrompt = this.options.systemPrompt ?? '';
+    const resolvedSystemPrompt = resolvedRefs.find((entry) => entry.scope === 'system_prompt_ref' && entry.record !== null);
+    if (resolvedSystemPrompt?.record) {
+      const contentText = this.contentFromVersion(resolvedSystemPrompt.record);
+      if (contentText !== null) systemPrompt = contentText;
+    }
+
+    const metadataRefLines: string[] = [];
+
+    for (const entry of [...resolvedRefs]
+      .filter((ref) => ref.scope === 'inactive_set')
+      .sort((a, b) => this.compareSessionRefResolution(a, b))) {
+      metadataRefLines.push(
+        `- inactive_ref id=${entry.ref.target_object_id} mode=${entry.ref.mode} anchor=${this.refAnchor(entry.ref)} resolved=${entry.record ? 'true' : 'false'}`,
+      );
+    }
+
+    for (const entry of [...resolvedRefs]
+      .filter((ref) => ref.record === null)
+      .sort((a, b) => this.compareSessionRefResolution(a, b))) {
+      metadataRefLines.push(
+        `- unresolved_ref scope=${entry.scope} id=${entry.ref.target_object_id} mode=${entry.ref.mode} anchor=${this.refAnchor(entry.ref)} reason=${entry.unresolvedReason ?? 'unresolved'}`,
+      );
+    }
+
+    const activeContent: ResolvedActiveContent[] = [];
+    const seen = new Set<string>();
+
+    for (const entry of resolvedRefs
+      .filter((ref) => (ref.scope === 'active_set' || ref.scope === 'pinned_set') && ref.record !== null)
+      .sort((a, b) => this.compareSessionRefResolution(a, b))) {
+      if (!entry.record) continue;
+
+      const contentText = this.contentFromVersion(entry.record);
+      if (contentText === null) continue;
+
+      const key = `${entry.record.objectId}:${entry.record.versionId}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const source: ResolvedActiveContent['source'] = entry.scope === 'active_set' ? 'active_set' : 'pinned_set';
+
+      activeContent.push({
+        key,
+        objectId: entry.record.objectId,
+        versionId: entry.record.versionId,
+        content: contentText,
+        source,
+        mode: entry.ref.mode,
+        refKind: entry.ref.ref_kind,
+      });
+    }
+
+    activeContent.sort((a, b) => this.compareActiveContent(a, b));
+
+    return {
+      systemPrompt,
+      metadataPool: sortedMetadata,
+      metadataRefLines,
+      activeContent,
+    };
+  }
+
+  private parseSessionRefArray(value: unknown): Ref[] {
+    if (!Array.isArray(value)) return [];
+    const refs: Ref[] = [];
+
+    for (const raw of value) {
+      const ref = this.parseSessionRef(raw);
+      if (ref) refs.push(ref);
+    }
+
+    return refs;
+  }
+
+  private parseSessionRef(value: unknown): Ref | null {
+    if (!isRecord(value)) return null;
+    if (typeof value.target_object_id !== 'string') return null;
+    if (value.mode !== 'dynamic' && value.mode !== 'pinned') return null;
+    if (typeof value.ref_kind !== 'string') return null;
+
+    const ref: Ref = {
+      target_object_id: value.target_object_id,
+      mode: value.mode,
+      ref_kind: value.ref_kind,
+    };
+
+    if (typeof value.target_version_id === 'string') ref.target_version_id = value.target_version_id;
+    if (typeof value.target_object_hash === 'string') ref.target_object_hash = value.target_object_hash;
+    if (isRecord(value.ref_metadata)) ref.ref_metadata = value.ref_metadata;
+
+    if (ref.mode === 'pinned' && !ref.target_version_id && !ref.target_object_hash) return null;
+    return ref;
+  }
+
+  private async resolveSessionRefs(entries: SessionRefEntry[]): Promise<ResolvedSessionRef[]> {
+    const latestCache = new Map<string, VersionRecord | null>();
+    const historyCache = new Map<string, VersionRecord[]>();
+
+    const resolved: ResolvedSessionRef[] = [];
+    for (const entry of entries) {
+      const outcome = await this.resolveRefRecord(entry.ref, latestCache, historyCache);
+      resolved.push({
+        ...entry,
+        record: outcome.record,
+        unresolvedReason: outcome.reason,
+      });
+    }
+
+    return resolved;
+  }
+
+  private async resolveRefRecord(
+    ref: Ref,
+    latestCache: Map<string, VersionRecord | null>,
+    historyCache: Map<string, VersionRecord[]>,
+  ): Promise<{ record: VersionRecord | null; reason?: string }> {
+    if (ref.mode === 'dynamic') {
+      let latest = latestCache.get(ref.target_object_id);
+      if (latest === undefined) {
+        latest = await this.storage.getLatest(ref.target_object_id);
+        latestCache.set(ref.target_object_id, latest);
+      }
+
+      if (!latest) return { record: null, reason: 'missing_target_head' };
+      this.latestVersionByObject.set(latest.objectId, latest.versionId);
+      return { record: latest };
+    }
+
+    let history = historyCache.get(ref.target_object_id);
+    if (!history) {
+      history = await this.storage.getHistory(ref.target_object_id, 'desc');
+      historyCache.set(ref.target_object_id, history);
+      if (history[0]) this.latestVersionByObject.set(history[0].objectId, history[0].versionId);
+    }
+
+    if (history.length === 0) return { record: null, reason: 'missing_target_object' };
+
+    if (ref.target_version_id) {
+      const byVersion = history.find((version) => version.versionId === ref.target_version_id);
+      if (!byVersion) return { record: null, reason: 'missing_target_version' };
+      if (ref.target_object_hash && byVersion.objectHash !== ref.target_object_hash) {
+        return { record: null, reason: 'pinned_hash_mismatch' };
+      }
+      return { record: byVersion };
+    }
+
+    if (ref.target_object_hash) {
+      const byHash = history.find((version) => version.objectHash === ref.target_object_hash);
+      if (!byHash) return { record: null, reason: 'missing_target_hash' };
+      return { record: byHash };
+    }
+
+    return { record: null, reason: 'invalid_pinned_anchor' };
+  }
+
+  private contentFromVersion(record: VersionRecord): string | null {
+    try {
+      const payload = asRecord(parseJson(record.contentStructJson), `content_struct:${record.versionId}`);
+      return typeof payload.content === 'string' ? payload.content : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private refAnchor(ref: Ref): string {
+    if (ref.target_version_id) return `version:${ref.target_version_id}`;
+    if (ref.target_object_hash) return `hash:${ref.target_object_hash}`;
+    return 'none';
+  }
+
+  private compareSessionRefResolution(left: SessionRefEntry, right: SessionRefEntry): number {
+    const scopeRank: Record<SessionRefScope, number> = {
+      chat_ref: 0,
+      system_prompt_ref: 1,
+      active_set: 2,
+      inactive_set: 3,
+      pinned_set: 4,
+    };
+
+    if (scopeRank[left.scope] !== scopeRank[right.scope]) {
+      return scopeRank[left.scope] - scopeRank[right.scope];
+    }
+
+    if (left.ref.target_object_id !== right.ref.target_object_id) {
+      return left.ref.target_object_id.localeCompare(right.ref.target_object_id);
+    }
+
+    const leftAnchor = this.refAnchor(left.ref);
+    const rightAnchor = this.refAnchor(right.ref);
+    if (leftAnchor !== rightAnchor) return leftAnchor.localeCompare(rightAnchor);
+
+    if (left.ref.ref_kind !== right.ref.ref_kind) return left.ref.ref_kind.localeCompare(right.ref.ref_kind);
+    return left.index - right.index;
+  }
+
+  private compareActiveContent(left: ResolvedActiveContent, right: ResolvedActiveContent): number {
+    const sourceRank = (value: ResolvedActiveContent['source']) => (value === 'active_set' ? 0 : 1);
+
+    if (sourceRank(left.source) !== sourceRank(right.source)) {
+      return sourceRank(left.source) - sourceRank(right.source);
+    }
+
+    if (left.objectId !== right.objectId) return left.objectId.localeCompare(right.objectId);
+    if (left.versionId !== right.versionId) return left.versionId.localeCompare(right.versionId);
+    return left.refKind.localeCompare(right.refKind);
+  }
+
+  private sortMetadataEntries(entries: MetadataEntry[]): MetadataEntry[] {
+    return [...entries].sort((left, right) => {
+      if (left.id !== right.id) return left.id.localeCompare(right.id);
+      if (left.type !== right.type) return left.type.localeCompare(right.type);
+      const leftSuffix = left.type === 'file' ? left.path ?? '' : left.tool ?? '';
+      const rightSuffix = right.type === 'file' ? right.path ?? '' : right.tool ?? '';
+      return leftSuffix.localeCompare(rightSuffix);
+    });
+  }
+
+  private renderMetadataPool(entries: MetadataEntry[], summaryLines: string[]): string {
     const lines = ['METADATA_POOL'];
-    for (const entry of this.metadataPool) {
+
+    for (const entry of entries) {
       if (entry.type === 'toolcall') {
         lines.push(`- id=${entry.id} type=toolcall tool=${entry.tool} status=${entry.status}`);
       } else {
         lines.push(`- id=${entry.id} type=file path=${entry.path} file_type=${entry.file_type} char_count=${entry.char_count}`);
       }
     }
+
+    if (summaryLines.length > 0) {
+      lines.push('REF_SUMMARY');
+      lines.push(...summaryLines);
+    }
+
     return lines.join('\n');
   }
 
@@ -746,6 +1137,55 @@ export class SelfContextManager {
     const ext = extname(path).toLowerCase();
     if (!ext) return 'text';
     return ext.slice(1);
+  }
+
+  private extractBashPathTokens(value: string): string[] {
+    const tokens = value
+      .split(/\s+/)
+      .map((token) => this.stripShellQuotes(token.trim()))
+      .filter((token) => token.length > 0);
+
+    return tokens.filter((token) => token.includes('/') || token.includes('.'));
+  }
+
+  private isLsCommand(command: string): boolean {
+    const first = command.split(/\s+/).filter((token) => token.length > 0)[0];
+    return first === 'ls';
+  }
+
+  private extractLsTargetPath(command: string): string | null {
+    const tokens = command.split(/\s+/).map((token) => this.stripShellQuotes(token)).filter((token) => token.length > 0);
+    if (tokens[0] !== 'ls') return null;
+
+    const args: string[] = [];
+    for (const token of tokens.slice(1)) {
+      if (token === '&&' || token === '||' || token === '|' || token === ';') break;
+      args.push(token);
+    }
+
+    const targets = args.filter((token) => !token.startsWith('-'));
+    if (targets.length === 0) return null;
+    return targets[targets.length - 1] ?? null;
+  }
+
+  private mapLsOutputPath(basePath: string | null, line: string): string | null {
+    const output = line.trim();
+    if (!output || output.startsWith('total ')) return null;
+    if (!basePath) return output;
+    if (isAbsolute(output)) return output;
+
+    const normalizedBase = basePath.replace(/\/+$/, '');
+    if (!normalizedBase) return output;
+
+    if (output === basename(normalizedBase) || output === '.') return normalizedBase;
+    return `${normalizedBase}/${output.replace(/^\.\//, '')}`;
+  }
+
+  private stripShellQuotes(token: string): string {
+    if ((token.startsWith('"') && token.endsWith('"')) || (token.startsWith("'") && token.endsWith("'"))) {
+      return token.slice(1, -1);
+    }
+    return token;
   }
 
   private extractPathsFromList(output: string): string[] {
@@ -794,4 +1234,9 @@ function asRecord(value: unknown, label: string): Record<string, any> {
 
 function isRecord(value: unknown): value is Record<string, any> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function asError(value: unknown): Error {
+  if (value instanceof Error) return value;
+  return new Error(String(value));
 }
