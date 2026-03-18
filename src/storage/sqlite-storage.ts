@@ -89,6 +89,21 @@ const SQL = {
   objectExists: 'SELECT 1 AS ok FROM objects WHERE object_id = ? LIMIT 1',
 } as const;
 
+/**
+ * @impldoc SQLite StoragePort implementation
+ *
+ * `SqliteStorage` is the active v1 `StoragePort` implementation.
+ *
+ * Implementation profile:
+ * - one schema for file/toolcall/chat/session/system-prompt objects
+ * - immutable version rows with per-object `version_no` and global `tx_seq`
+ * - explicit reference extraction/storage from structured payload refs
+ * - unresolved references are stored rather than rejected
+ * - object/session separation happens through object identity inside a shared DB
+ *
+ * This class owns SQLite migration, transactional writes, and query methods. It
+ * does not define runtime context assembly policy.
+ */
 export class SqliteStorage implements StoragePort {
   private readonly db: DatabaseSync;
   private readonly cache = new Map<string, Prepared>();
@@ -109,6 +124,21 @@ export class SqliteStorage implements StoragePort {
     this.db.close();
   }
 
+  /**
+   * @impldoc SQLite `putVersion` transaction ordering
+   *
+   * Current write ordering is deliberate:
+   * 1. reject invalid session identity before transactional work
+   * 2. resolve request idempotency before optimistic head conflict checks
+   * 3. ensure the object row exists and object type matches
+   * 4. allocate the next per-object version number
+   * 5. insert the immutable version row and update object HEAD
+   * 6. extract/store explicit refs for the new version
+   * 7. persist the idempotency record
+   *
+   * This ordering preserves the intended difference between validation failure,
+   * idempotent replay, and optimistic conflict.
+   */
   async putVersion(input: VersionWriteInput): Promise<PutResult> {
     if (isInvalidSessionIdentity(input)) {
       return { ok: false, validation: true, reason: 'invalid_session_id' };

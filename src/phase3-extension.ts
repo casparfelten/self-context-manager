@@ -84,6 +84,31 @@ type ResolvedActiveContent = {
 // Legacy external backend support was intentionally removed.
 // Any missing historical/as-of behavior must be reintroduced via StoragePort/SQLite,
 // not by re-adding direct external backend clients.
+/**
+ * @impldoc SelfContextManager runtime
+ *
+ * `SelfContextManager` is the active runtime that bridges Pi session activity to
+ * the versioned store.
+ *
+ * Current responsibilities:
+ * - bootstrap/load session, chat, and system-prompt objects
+ * - persist session transitions as immutable session versions
+ * - maintain known-object metadata, active membership, and pinned membership
+ * - assemble deterministic model context from storage-backed state
+ * - observe tracked tool/file activity and sync it back through `StoragePort`
+ * - watch tracked file paths for on-disk updates and unlinks
+ *
+ * Current assembly order:
+ * 1. system prompt
+ * 2. metadata block
+ * 3. chat history + toolcall references
+ * 4. active content blocks
+ *
+ * Important current limitation:
+ * - explicit activate/deactivate/pin/unpin behavior exists here in the runtime,
+ *   but the thin Pi wrapper does not yet expose a full model-facing control
+ *   plane for deliberate self-context editing.
+ */
 export class SelfContextManager {
   private readonly storage: StoragePort;
   private readonly closeStorage?: () => void;
@@ -141,6 +166,14 @@ export class SelfContextManager {
     this.watcher.on('unlink', (path) => void this.handleWatcherUnlink(path));
   }
 
+  /**
+   * @impldoc Session bootstrap and resume
+   *
+   * `load()` initializes the runtime's durable baseline for the current
+   * session. It ensures the system prompt and chat objects exist, restores prior
+   * session state when present, rehydrates watched file paths, and then resumes
+   * deterministic context assembly from the latest session HEAD.
+   */
   async load(): Promise<void> {
     const existing = await this.readSessionState();
 
@@ -205,6 +238,17 @@ export class SelfContextManager {
     return this.assembleContext();
   }
 
+  /**
+   * @impldoc Explicit file indexing
+   *
+   * `read(path)` is the runtime's explicit file-ingest path. It resolves the
+   * workspace-relative path, indexes the file into the versioned store, marks it
+   * active in the current session, and persists the resulting session change.
+   *
+   * Current missing-file behavior is structured rather than exceptional:
+   * `ENOENT` becomes `{ ok: false, message }` so the caller can surface a clean
+   * failure without tearing down the extension.
+   */
   async read(path: string): Promise<{ ok: boolean; message: string; id?: string }> {
     const absolutePath = this.resolvePath(path);
     const id = `file:${absolutePath}`;
@@ -223,6 +267,16 @@ export class SelfContextManager {
     return { ok: true, message: `read ok id=${id}`, id };
   }
 
+  /**
+   * @impldoc Runtime context-set mutations
+   *
+   * The runtime already supports explicit context mutation over known objects:
+   * - `activate` / `deactivate` change working-set membership
+   * - `pin` / `unpin` manage durable anchors across context churn
+   *
+   * These operations persist through session versions, but they are currently a
+   * runtime capability rather than a finished model-facing CLI/control surface.
+   */
   activate(id: string): { ok: boolean; message: string } {
     const object = this.objects.get(id);
     if (!object) return { ok: false, message: `Object not found: ${id}` };
@@ -289,6 +343,22 @@ export class SelfContextManager {
     await this.indexDiscoveredPaths(paths);
   }
 
+  /**
+   * @impldoc Tool-observation heuristics
+   *
+   * `observeToolExecutionEnd()` is the current heuristic bridge from raw tool
+   * execution back into managed context state. The active implementation only
+   * reacts to `bash`, and then tries to infer candidate file paths from the
+   * command/output pair.
+   *
+   * Current special case:
+   * - multiline `ls <target>\n...` output is resolved relative to the ls target
+   *   path so directory listings become metadata/file candidates under that
+   *   target rather than under the workspace root.
+   *
+   * This is intentionally heuristic and narrower than a full tool-semantic
+   * integration layer.
+   */
   async observeToolExecutionEnd(toolName: string, commandOrOutput: string): Promise<void> {
     if (toolName !== 'bash') return;
 

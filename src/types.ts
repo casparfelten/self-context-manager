@@ -1,3 +1,10 @@
+/**
+ * @impldoc Legacy in-memory object model types
+ *
+ * These types describe the earlier in-memory object model that still ships in
+ * the public barrel for phase/legacy tests and utility code. They are not the
+ * active SQLite storage contract; that contract lives under `src/storage/*`.
+ */
 export type ObjectType = 'file' | 'toolcall' | 'chat' | 'session';
 
 export interface Provenance {

@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "docs:generate": "node scripts/generate-implementation-docs.mjs",
+    "docs:check": "node scripts/generate-implementation-docs.mjs --check"
   },
   "dependencies": {
     "@mariozechner/pi-ai": "latest",

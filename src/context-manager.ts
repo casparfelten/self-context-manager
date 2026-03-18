@@ -1,3 +1,13 @@
+/**
+ * @impldoc Phase-2 in-memory context manager
+ *
+ * `ContextManager` is the older non-persistent in-memory context assembly path
+ * kept for earlier phase tests. It tracks toolcall metadata, recent chat turns,
+ * active content, and pinned ids entirely in memory.
+ *
+ * It is not the active versioned runtime for Pi-facing SCM behavior. That role
+ * belongs to `SelfContextManager` in `src/phase3-extension.ts`.
+ */
 export type ContentPart = { type: 'text'; text: string } | { type: 'tool-call'; toolCallId: string; toolName: string; input?: Record<string, unknown> };
 
 export type UserMessage = {
@@ -65,6 +75,14 @@ interface ToolcallState {
   turnIndex: number;
 }
 
+/**
+ * @impldoc In-memory context assembly behavior
+ *
+ * The legacy `ContextManager` assembles context from an in-memory transcript by
+ * keeping a metadata pool, rolling chat turns, toolcall refs, and explicit
+ * active-content blocks. It exists as a simpler predecessor/runtime helper and
+ * should not be confused with the active storage-backed SCM runtime.
+ */
 export class ContextManager {
   private readonly metadataPool: MetadataEntry[] = [];
   private readonly metadataSeen = new Set<string>();

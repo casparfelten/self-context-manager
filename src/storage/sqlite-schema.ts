@@ -1,3 +1,19 @@
+/**
+ * @impldoc SQLite schema profile
+ *
+ * The active SQLite schema stores four durable concerns:
+ * - stable object identities in `objects`
+ * - immutable versions in `object_versions`
+ * - explicit structured references in `doc_references`
+ * - request idempotency records in `write_idempotency`
+ *
+ * Canonical typed envelope fields (`path`, `session_id`, `tool_name`,
+ * `status`, `char_count`) live directly in `object_versions`.
+ *
+ * Session identity is defended at the DB boundary with:
+ * - a `session_id` CHECK constraint
+ * - trigger `trg_session_version_requires_session_id`
+ */
 export const SQLITE_SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS objects (
   object_id           TEXT PRIMARY KEY,
@@ -96,6 +112,18 @@ BEGIN
 END;
 `;
 
+/**
+ * @impldoc SQLite index profile
+ *
+ * The active index set optimizes the implementation's current read paths:
+ * - latest/history lookups by object identity and version sequence
+ * - session/path/tool envelope filtering
+ * - reference traversal by source, target, mode, and unresolved status
+ * - idempotency lookups by request and object identity
+ *
+ * This is intentionally a minimal profile; features such as FTS and GC remain
+ * out of scope for the current implementation.
+ */
 export const SQLITE_INDEX_SQL = `
 CREATE INDEX IF NOT EXISTS idx_versions_object_seq_desc ON object_versions(object_id, version_no DESC);
 CREATE INDEX IF NOT EXISTS idx_versions_object_txseq_desc ON object_versions(object_id, tx_seq DESC);

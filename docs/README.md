@@ -3,44 +3,36 @@
 ## Canonical active docs
 
 1. `intent-ssot-v1.md` — **Intent SSOT** (authoritative behavior/invariants)
-2. `implementation-db-ssot-v1.md` — **DB Implementation SSOT** (SQLite schema + transactional storage contract)
-3. `implementation-agentic-ssot-v1.md` — **Agentic Implementation SSOT** (context loading behavior + query-interface boundary)
+2. Source docstrings — **authoritative implementation documentation**
+   - `src/storage/storage-port.ts`
+   - `src/storage/sqlite-schema.ts`
+   - `src/storage/sqlite-storage.ts`
+   - `src/phase3-extension.ts`
+   - `.pi/live-drive/scm-live-drive.ts`
+3. `generated/implementation-reference.md` — generated implementation reference compiled from source docstrings (read-only convenience output)
 
 Authority precedence:
-- Intent (`intent-ssot-v1.md`) is canonical for subsystem semantics.
-- DB and Agentic implementation SSOTs must conform to intent.
+- Intent (`intent-ssot-v1.md`) is authoritative for subsystem semantics.
+- Implementation details live in source docstrings adjacent to the code they describe.
+- Generated docs are derived artifacts, not the canonical source.
 
-## Implementation status snapshot (as of 2026-03-10)
+## Implementation docs workflow
 
-- Active runtime/storage path is implemented in `src/phase3-extension.ts` + `src/storage/*`.
-- DB SSOT conformance coverage: `tests/storage/` (`tests/storage/SSOT_DB_TEST_MAP.md`).
-- Agentic SSOT conformance coverage: `tests/agentic/` (`tests/agentic/SSOT_AGENTIC_TEST_MAP.md`).
+- Generate implementation docs: `npm run docs:generate`
+- Check generated docs are up to date: `npm run docs:check`
 
-## Canonical profile summary (v1)
+## Current profile summary
 
-- Minimal immutable version store with idempotent writes
-- Global monotonic `tx_seq` + per-object monotonic `version_no`
-- Explicit structured references with dynamic/pinned modes
-- First-class session tracking via `session` object versions
-- Canonical typed envelope fields (`path`, `session_id`, `tool_name`, `status`, `char_count`)
-
-Explicitly out of scope in this profile:
-- `doc_nodes` structural projection
-- temporal validity intervals / as-of-time API
-- field-hash pinning
-- built-in FTS and GC APIs
+- Intent stays in external docs.
+- Durable implementation details live in source docstrings.
+- Historical markdown implementation SSOT snapshots were archived under `docs/archive/spec-legacy/` on 2026-03-11.
 
 ## Historical/non-normative docs
 
-Note: historical docs may reference removed legacy backend artifacts; those references are archival context only.
-
-Legacy adapter/fallback-adapter wording (including UI/harness adapter discussions in archived specs and notes) is historical and non-normative.
-
-- `docs/archive/` — historical snapshots moved out of canonical path.
-  - `docs/archive/spec-legacy/` — prior SSOT/implementation docs (superseded).
-  - `docs/archive/build-notes-legacy/` — rebuild notes and historical execution logs.
+- `docs/archive/` — historical snapshots and non-normative notes.
+  - `docs/archive/spec-legacy/` — superseded spec/SSOT snapshots, including pre-docstring implementation markdown docs.
+  - `docs/archive/build-notes-legacy/` — historical rebuild notes and execution logs.
   - `docs/archive/experiments-legacy/` — experimental methodology, data, and reports.
-  - `docs/archive/session-notes/` — archived working/session notes and handoff prompts (non-normative).
-  - `docs/archive/write-down/` — dated checkpoint write-down notes (non-normative).
-  - `docs/archive/eval-plan-legacy.md` — evaluation roadmap (historical).
-- `docs/temp/` — working notes in progress only; archive to `docs/archive/` at checkpoints/handoff.
+  - `docs/archive/session-notes/` — archived working/session notes and handoff prompts.
+  - `docs/archive/write-down/` — dated checkpoint notes.
+- `docs/temp/` — temporary working notes only; archive at checkpoints/handoff.

@@ -1,0 +1,46 @@
+{
+  "sessionObjectId": "session:_home_bitzaven_CodingProjects_self-context-manager_.pi_live-drive_scm-drive.jsonl",
+  "metadataPool": [
+    {
+      "id": "call_cD2XO29YTr7j0qz8SyqqQcKZ|fc_08829c0496c7238f0169b0a10612d88191967f349820fba517",
+      "type": "toolcall",
+      "status": "ok",
+      "tool": "read"
+    },
+    {
+      "id": "call_NIT5u1HTVNr7AoCwqhiEDKGN|fc_08829c0496c7238f0169b0a11ee8c88191a567c6710c76e474",
+      "type": "toolcall",
+      "status": "ok",
+      "tool": "bash"
+    },
+    {
+      "id": "file:/home/bitzaven/CodingProjects/self-context-manager/a.md",
+      "type": "file",
+      "path": null,
+      "file_type": "md",
+      "char_count": 0
+    },
+    {
+      "id": "file:/home/bitzaven/CodingProjects/self-context-manager/b.md",
+      "type": "file",
+      "path": null,
+      "file_type": "md",
+      "char_count": 0
+    },
+    {
+      "id": "file:/home/bitzaven/CodingProjects/self-context-manager/fixtures/live-drive/a.md",
+      "type": "file",
+      "path": "/home/bitzaven/CodingProjects/self-context-manager/fixtures/live-drive/a.md",
+      "file_type": "md",
+      "char_count": 131,
+      "mtime_ms": 1773182972810.6858
+    }
+  ],
+  "activeSet": [
+    "call_cD2XO29YTr7j0qz8SyqqQcKZ|fc_08829c0496c7238f0169b0a10612d88191967f349820fba517",
+    "call_NIT5u1HTVNr7AoCwqhiEDKGN|fc_08829c0496c7238f0169b0a11ee8c88191a567c6710c76e474",
+    "chat:_home_bitzaven_CodingProjects_self-context-manager_.pi_live-drive_scm-drive.jsonl",
+    "file:/home/bitzaven/CodingProjects/self-context-manager/fixtures/live-drive/a.md"
+  ],
+  "pinnedSet": []
+}

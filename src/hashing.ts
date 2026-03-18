@@ -1,4 +1,12 @@
 import { createHash } from 'node:crypto';
+
+/**
+ * @impldoc Legacy hashing helpers
+ *
+ * These helpers support the older in-memory object model exported from the
+ * package root. They are distinct from the active SQLite object/reference hash
+ * machinery implemented in `src/storage/sqlite-storage.ts`.
+ */
 import type { MemoryObject } from './types.js';
 
 function stableStringify(value: unknown): string {

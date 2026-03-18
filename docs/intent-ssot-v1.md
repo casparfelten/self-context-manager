@@ -1,7 +1,7 @@
 # Storage & Tracking Subsystem — v1 Intent Spec
 
 Status: **Canonical intent spec (authoritative behavior contract)**
-Date: 2026-03-10
+Date: 2026-03-11
 
 ---
 
@@ -11,10 +11,14 @@ This document is the canonical behavioral contract for storage/tracking.
 
 Authority rules:
 1. This document defines behavior, invariants, and conflict semantics.
-2. Implementation is split across:
-   - `docs/implementation-db-ssot-v1.md` (DB layer)
-   - `docs/implementation-agentic-ssot-v1.md` (context-loading/agentic layer)
-3. If intent vs implementation wording conflicts, intent wins; implementation docs must be updated.
+2. Implementation details are documented in source docstrings adjacent to the active code, primarily:
+   - `src/storage/storage-port.ts`
+   - `src/storage/sqlite-schema.ts`
+   - `src/storage/sqlite-storage.ts`
+   - `src/phase3-extension.ts`
+   - `.pi/live-drive/scm-live-drive.ts`
+3. Generated implementation reference (`docs/generated/implementation-reference.md`) is derived from those docstrings and is convenience output only.
+4. If intent vs implementation wording conflicts, intent wins; implementation docs must be updated.
 
 ---
 
@@ -255,6 +259,6 @@ These are cut from core scope, not deferred-internals pretending to be active.
 ## 11) Cross-doc canonical map
 
 - Canonical intent (this doc): `docs/intent-ssot-v1.md`
-- Canonical DB implementation SSOT: `docs/implementation-db-ssot-v1.md`
-- Canonical agentic implementation SSOT: `docs/implementation-agentic-ssot-v1.md`
+- Canonical implementation docs: source docstrings in `src/storage/storage-port.ts`, `src/storage/sqlite-schema.ts`, `src/storage/sqlite-storage.ts`, `src/phase3-extension.ts`, `.pi/live-drive/scm-live-drive.ts`
+- Generated implementation reference: `docs/generated/implementation-reference.md`
 - Historical/non-normative docs: `docs/archive/`
